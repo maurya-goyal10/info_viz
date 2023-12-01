@@ -1,141 +1,160 @@
-el_svg = document.querySelector('svg');
+// Select the SVG element and get its dimensions
+const el_svg = document.querySelector('svg');
+const svg_width = +getComputedStyle(el_svg).getPropertyValue('width').slice(0, -2);
+const svg_height = +getComputedStyle(el_svg).getPropertyValue('height').slice(0, -2);
 
-var svg_width = getComputedStyle(el_svg).getPropertyValue('width');
-svg_width = +svg_width.slice(0,svg_width.length-2);
-var svg_height = getComputedStyle(el_svg).getPropertyValue('height');
-svg_height = +svg_height.slice(0,svg_height.length-2);
+// Create a D3 selection for the SVG element
+const svg = d3.select("svg");
 
+// Default value for selected x-axis and y-axis column
+let selected_value_x = 'expected_goals';
+let selected_value_y = 'goals_scored'
 
-var svg = d3.select("svg");
+// Parameters for the plot
+const margin = { top: 50, left: 250, right: 20, bottom: 70 };
+const inner_width = svg_width - margin.left - margin.right;
+const inner_height = svg_height - margin.top - margin.bottom;
 
-const render = data => {
-    const yVal = d => d['goals_scored'];
-    const xVal = d => d['expected_goals'];
-    const margin = {top: 50, left: 250, right: 20, bottom: 70};
-    const inner_width = svg_width - margin.left - margin.right;
-    const inner_height = svg_height - margin.top - margin.bottom;
+const dropdownMargin = 20; // Margin between x-axis and dropdown
+const dropdownWidth = 150; // Width of the dropdown
+const dropdownHeight = 30;
 
-    var g1 = svg.append('g')
-        .attr('transform',`translate(${margin.left},${margin.top})`);
+// Dropdown position for the one in X axis
+const dropdown1X = (inner_width - dropdownWidth) / 2 + dropdownMargin;
+const dropdown1Y = inner_height + dropdownMargin + dropdownMargin;
 
-    var xscale = d3.scaleLinear()
-        .domain([0,d3.max(data,xVal)])
-        .range([0,inner_width]);
+// Dropdown position for the one in Y axis
+const dropdown2X = -1 * dropdownWidth - dropdownMargin;
+const dropdown2Y = (inner_height - dropdownWidth) / 2 + dropdownMargin;
 
-    var yscale = d3.scaleLinear()
-        .domain([0,d3.max(data,yVal)])
-        .range([inner_height,0]);
-
-    g1.append('g').call(d3.axisLeft(yscale))
-    g1.append('g').call(d3.axisBottom(xscale))
-        .attr('transform',`translate(0,${inner_height})`)
-
-    g1.selectAll('dot').data(data)
-    .enter().append('circle')
-        .attr('cx',d => xscale(xVal(d)))
-        .attr('cy',d => yscale(yVal(d)))
-        .attr('r',2.5);
-    }
-
-// const render = data => {
-//     const yVal = d =>  d.country;
-//     const xVal = d => d['2023_last_updated'];
-//     const margin = {top: 50, left: 250, right: 20, bottom: 70};
-//     const inner_width = svg_width - margin.left - margin.right;
-//     const inner_height = svg_height - margin.top - margin.bottom;
-
-//     var g1 = svg.append('g')
-//         .attr('transform',`translate(${margin.left},${margin.top})`);
-
-//     const xscale = d3.scaleLinear()
-//         .domain([0,d3.max(data,d => d['2023_last_updated'])])
-//         .range([0,inner_width])
-
-//     const yscale = d3.scaleBand()
-//         .domain(data.map(d => d.country))
-//         .range([0,inner_height])
-//         .padding(0.3)
-
-//     const xAxisTickFormat = d3.axisBottom(xscale)
-//         .tickFormat(number => d3.format(".2s")(number).replaceAll("G","B"))
-//         .tickSize(-inner_height)
-
-//     g1.append('g')
-//         .call(d3.axisLeft(yscale))
-//         .selectAll('.domain, .tick line').remove();
-
-//     const xAxis = g1.append('g').call(xAxisTickFormat)
-//         .attr('transform',`translate(0,${inner_height})`) // to bring down
-    
-//     xAxis.selectAll('.domain').remove();
-//     xAxis.append('text')
-//         .attr('x',inner_width/2)
-//         .attr('y',50)
-//         .attr('fill','black')
-//         .text("Population"); 
-
-//     g1.selectAll('rect').data(data)
-//     .enter().append('rect')
-//         .attr('y',d => yscale(yVal(d)))
-//         .attr('width',d => xscale(xVal(d)))
-//         .attr('height',yscale.bandwidth());
-
-//     g1.append('text')
-//         .attr('y',-10)
-//         .text("Top 10 Most Popular Countries");
-// }
-
-d3.csv('/data/players.csv')
-.then(data => {
-    data.forEach(ele => {
-        // ele['2023_last_updated'] = +ele['2023_last_updated']
-        //     .replaceAll(",","");
-        // Object.keys(ele).forEach(e => {
-        //     if (!(e == 'iso_code' || e == 'country' 
-        //         || e =='2023_last_updated')){
-        //         delete ele[e];
-        //     }
-        // })
-        
-        ele['id'] = +ele['id']
-        ele['now_cost'] = +ele['now_cost']
-        ele['expected_goals_conceded'] = +ele['expected_goals_conceded']
-        ele['minutes'] = +ele['minutes']
-        ele['points_per_game'] = +ele['points_per_game']
-        ele['starts'] = +ele['starts']
-        ele['form'] = +ele['form']
-        ele['expected_goal_involvements'] = +ele['expected_goal_involvements']
-        ele['assists'] = +ele['assists']
-        ele['goals_conceded'] = +ele['goals_conceded']
-        ele['bonus'] = +ele['bonus']
-        ele['influence_rank'] = +ele['influence_rank']
-        ele['expected_goals'] = +ele['expected_goals']
-        ele['chance_of_playing_next_round'] = +ele['chance_of_playing_next_round']
-        ele['goals_scored'] = +ele['goals_scored']
-        ele['ict_index'] = +ele['ict_index']
-        ele['influence'] = +ele['influence']
-        ele['threat'] = +ele['threat']
-        ele['clean_sheets'] = +ele['clean_sheets']
-        ele['total_points'] = +ele['total_points']
-        ele['saves'] = +ele['saves']
-        ele['bps'] = +ele['bps']
-        ele['expected_assists'] = +ele['expected_assists']
-        ele['red_cards'] = +ele['red_cards']
-        ele['creativity'] = +ele['creativity']
-        console.log(ele['expected_goals'])
-
-        // name,position,team,web_name,news,status,news_added
-        // expected_goals_conceded_per_90,value_season,ep_next,chance_of_playing_this_round,form_rank,saves_per_90,expected_assists_per_90,
-        // influence_rank,creativity_rank,penalties_missed,event_points,penalties_order,value_form,transfers_in,in_dreamteam,now_cost_rank,
-        // ep_this,selected_rank,ict_index_rank,transfers_in_event,transfers_out_event,cost_change_start_fall,transfers_out,
-        // expected_goals_per_90,creativity_rank_type,now_cost_rank_type,penalties_saved,threat_rank,clean_sheets_per_90,
-        // dreamteam_count,starts_per_90,cost_change_event_fall,form_rank_type,
-        // cost_change_event,expected_goal_involvements_per_90,goals_conceded_per_90,
-        // ict_index_rank_type,points_per_game_rank,direct_freekicks_order,cost_change_start
-        // threat_rank_type,influence_rank_type
+// Function to set up the initial plot
+const setupPlot = (data) => {
 
 
+    // Create the main plot area
+    const g1 = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Scales for X and Y axes
+    const xscale = d3.scaleLinear().domain([0, d3.max(data, d => d[selected_value_x])]).range([0, inner_width]);
+    const yscale = d3.scaleLinear().domain([0, d3.max(data, d => d[selected_value_y])]).range([inner_height, 0]);
+
+    g1.append('g').attr('class', 'y-axis')
+                  .call(d3.axisLeft(yscale));
+
+    g1.append('g').attr('class', 'x-axis')
+                .call(d3.axisBottom(xscale))
+                .attr('transform', `translate(0,${inner_height})`);
+
+    // Plot circles for data points
+    g1.selectAll('dot')
+        .data(data)
+        .enter().append('circle')
+        .attr('cx', d => xscale(d[selected_value_x]))
+        .attr('cy', d => yscale(d[selected_value_y]))
+        .attr('r', 2.5);
+
+    // Add dropdown for selecting Y-axis column
+    const dropdownForeignObjectY = g1.append('foreignObject')
+        .attr('x', dropdown2X)
+        .attr('y', dropdown2Y)
+        .attr('width', dropdownWidth)
+        .attr('height', dropdownHeight);
+
+    const dropdownDivY = dropdownForeignObjectY.append('xhtml:div').style('display', 'inline-block');
+    const dropdownSelectY = dropdownDivY.append('xhtml:select');
+
+    // Get all available columns from the CSV data
+    const columns = Object.keys(data[0]);
+
+    dropdownSelectY.selectAll('option')
+        .data(columns)
+        .enter()
+        .append('xhtml:option')
+        .attr('value', d => d)
+        .text(d => d);
+
+    // Styling for the select element
+    dropdownSelectY.style('width', '100%').style('padding', '4px').style('font-size', '14px');
+
+    // Event listener for dropdown change
+    dropdownSelectY.on('change', function() {
+        selected_value_y = d3.select(this).property('value');
+        updatePlot(data);
     });
-    render(data);
-    // render(data.slice(0,9));
-})
+
+    // Add dropdown for selecting X-axis column
+    const dropdownForeignObjectX = g1.append('foreignObject')
+        .attr('x', dropdown1X)
+        .attr('y', dropdown1Y)
+        .attr('width', dropdownWidth)
+        .attr('height', dropdownHeight);
+
+    const dropdownDivX = dropdownForeignObjectX.append('xhtml:div').style('display', 'inline-block');
+    const dropdownSelectX = dropdownDivX.append('xhtml:select');
+
+
+    dropdownSelectX.selectAll('option')
+        .data(columns)
+        .enter()
+        .append('xhtml:option')
+        .attr('value', d => d)
+        .text(d => d);
+
+    // Styling for the select element
+    dropdownSelectX.style('width', '100%').style('padding', '4px').style('font-size', '14px');
+
+    // Event listener for dropdown change
+    dropdownSelectX.on('change', function() {
+        selected_value_x = d3.select(this).property('value');
+        updatePlot(data);
+    });
+};
+
+// Function to update the plot based on new selection
+const updatePlot = (data) => {
+
+    const yscaleNew = d3.scaleLinear()
+                        .domain([0, d3.max(data, d => d[selected_value_y])])
+                        .range([inner_height, 0]);
+
+    const xscaleNew = d3.scaleLinear()
+                     .domain([0, d3.max(data, d => d[selected_value_x])])
+                     .range([0, inner_width]);
+
+    const g1 = svg.select('g');
+    
+    // Remove the previous axes
+    g1.select('.x-axis').remove();
+    g1.select('.y-axis').remove();
+
+    // Update the axes
+    g1.append('g').attr('class', 'x-axis')
+                .call(d3.axisBottom(xscaleNew))
+                .attr('transform', `translate(0,${inner_height})`);
+    
+    g1.append('g').attr('class', 'y-axis')
+                .call(d3.axisLeft(yscaleNew));
+                
+
+    // Update circles
+    g1.selectAll('circle')
+        .data(data)
+        .transition()
+        .duration(500)
+        .attr('cx', d => xscaleNew(d[selected_value_x]))
+        .attr('cy', d => yscaleNew(d[selected_value_y]));
+};
+
+// Fetch CSV data and set up the initial plot
+d3.csv('http://localhost:8000/players.csv')
+    .then(data => {
+        data.forEach(ele => {
+            // Convert string values to numbers if needed
+            Object.keys(ele).forEach(key => {
+                if (!isNaN(ele[key])) {
+                    ele[key] = +ele[key];
+                }
+            });
+        });
+        setupPlot(data); // Set up initial plot
+    });
