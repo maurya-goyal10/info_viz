@@ -2,3 +2,7 @@ svg{
     height: 400px;
     width: 600px;
 }
+
+.domain, line{
+    stroke: #E5E2E0;
+}

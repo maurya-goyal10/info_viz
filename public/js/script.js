@@ -29,24 +29,33 @@ const dropdown2Y = (inner_height - dropdownWidth) / 2 + dropdownMargin;
 
 // Function to set up the initial plot
 const setupPlot = (data) => {
-
-
     // Create the main plot area
     const g1 = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Scales for X and Y axes
-    const xscale = d3.scaleLinear().domain([0, d3.max(data, d => d[selected_value_x])]).range([0, inner_width]);
-    const yscale = d3.scaleLinear().domain([0, d3.max(data, d => d[selected_value_y])]).range([inner_height, 0]);
+    const xscale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d[selected_value_x])])
+                    .range([0, inner_width]);
+    const yscale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d[selected_value_y])])
+                    .range([inner_height, 0]);
+
+    // Axis
+    const xAxis = d3.axisBottom(xscale)
+        .tickSize(-inner_height)
+
+    const yAxis = d3.axisLeft(yscale)
+        .tickSize(-inner_width)
 
     g1.append('g').attr('class', 'y-axis')
-                  .call(d3.axisLeft(yscale));
+                  .call(yAxis);
 
     g1.append('g').attr('class', 'x-axis')
-                .call(d3.axisBottom(xscale))
+                .call(xAxis)
                 .attr('transform', `translate(0,${inner_height})`);
 
     // Plot circles for data points
-    g1.selectAll('dot')
+    const circles = g1.selectAll('dot')
         .data(data)
         .enter().append('circle')
         .attr('cx', d => xscale(d[selected_value_x]))
@@ -64,6 +73,7 @@ const setupPlot = (data) => {
     const dropdownSelectY = dropdownDivY.append('xhtml:select');
 
     // Get all available columns from the CSV data
+    // make them the columns we need
     const columns = Object.keys(data[0]);
 
     dropdownSelectY.selectAll('option')
@@ -73,6 +83,10 @@ const setupPlot = (data) => {
         .attr('value', d => d)
         .text(d => d);
 
+    circles.on('click', (event) => 
+        console.log(event.target)
+    )
+
     // Styling for the select element
     dropdownSelectY.style('width', '100%').style('padding', '4px').style('font-size', '14px');
 
@@ -80,6 +94,7 @@ const setupPlot = (data) => {
     dropdownSelectY.on('change', function() {
         selected_value_y = d3.select(this).property('value');
         updatePlot(data);
+
     });
 
     // Add dropdown for selecting X-axis column
@@ -113,29 +128,48 @@ const setupPlot = (data) => {
 // Function to update the plot based on new selection
 const updatePlot = (data) => {
 
+    ymin = Math.min(0,d3.min(data, d => d[selected_value_y]))
+
     const yscaleNew = d3.scaleLinear()
-                        .domain([0, d3.max(data, d => d[selected_value_y])])
+                        .domain([ymin,d3.max(data, d => d[selected_value_y])])
                         .range([inner_height, 0]);
 
     const xscaleNew = d3.scaleLinear()
-                     .domain([0, d3.max(data, d => d[selected_value_x])])
+                     .domain([Math.min(0,d3.min(data, d => d[selected_value_x]))
+                        ,d3.max(data, d => d[selected_value_x])])
                      .range([0, inner_width]);
 
     const g1 = svg.select('g');
     
     // Remove the previous axes
-    g1.select('.x-axis').remove();
-    g1.select('.y-axis').remove();
+    // g1.select('.x-axis').remove();
+    // g1.select('.y-axis').remove();
+
+    // the axis
+    const xAxis = d3.axisBottom(xscaleNew)
+        .tickSize(-inner_height)
+
+    const yAxis = d3.axisLeft(yscaleNew)
+        .tickSize(-inner_width)
+        
+    g1.select('.x-axis')
+        .transition()
+        .call(xAxis)
+        .duration(500)
+
+    g1.select('.y-axis')
+        .transition()
+        .call(yAxis)
+        .duration(500)
 
     // Update the axes
-    g1.append('g').attr('class', 'x-axis')
-                .call(d3.axisBottom(xscaleNew))
-                .attr('transform', `translate(0,${inner_height})`);
+    // g1.append('g').attr('class', 'x-axis')
+    // .call(xAxis)
+    // .attr('transform', `translate(0,${inner_height})`);
     
-    g1.append('g').attr('class', 'y-axis')
-                .call(d3.axisLeft(yscaleNew));
-                
-
+    // g1.append('g').attr('class', 'y-axis')
+    // .call(yAxis);            
+        
     // Update circles
     g1.selectAll('circle')
         .data(data)
@@ -146,7 +180,7 @@ const updatePlot = (data) => {
 };
 
 // Fetch CSV data and set up the initial plot
-d3.csv('http://localhost:8000/players.csv')
+d3.csv('../data/players.csv')
     .then(data => {
         data.forEach(ele => {
             // Convert string values to numbers if needed
