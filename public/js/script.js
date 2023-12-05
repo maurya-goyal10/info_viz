@@ -27,6 +27,39 @@ const dropdown1Y = inner_height + dropdownMargin + dropdownMargin;
 const dropdown2X = -1 * dropdownWidth - dropdownMargin;
 const dropdown2Y = (inner_height - dropdownWidth) / 2 + dropdownMargin;
 
+// Tooltip
+var tooltip = d3.select("body")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+
+// mouse over function depending in the datapoint d
+var mouseover = d => {
+    tooltip.style("opacity", 1)
+    .html(`${d.target.__data__.name} <br> 
+        (${d.target.__data__.position}) <br>
+        ${d.target.__data__.team}`)
+    .style("left", (+d.pageX+20) + "px")
+    .style("top", (d.pageY) + "px")
+};
+
+var mousemove = d => {
+    // tooltip
+    // .html(`${d.target.__data__.name} <br> 
+    //     (${d.target.__data__.position}) <br>
+    //     ${d.target.__data__.team}`)
+    // .style("left", (+d.pageX+20) + "px")
+    // .style("top", (d.pageY) + "px")
+};
+
+// A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+var mouseleave = d => {
+    tooltip
+    .transition()
+    .duration(1000)
+    .style("opacity", 0)};
+
+
 // Function to set up the initial plot
 const setupPlot = (data) => {
     // Create the main plot area
@@ -55,12 +88,16 @@ const setupPlot = (data) => {
                 .attr('transform', `translate(0,${inner_height})`);
 
     // Plot circles for data points
-    const circles = g1.selectAll('dot')
+    var circles = g1.selectAll('dot')
         .data(data)
         .enter().append('circle')
         .attr('cx', d => xscale(d[selected_value_x]))
         .attr('cy', d => yscale(d[selected_value_y]))
-        .attr('r', 2.5);
+        .attr('r', 5)
+        // for hover
+        .on("mouseover", mouseover )
+        .on("mousemove", mouseover )
+        .on("mouseleave", mouseleave );
 
     // Add dropdown for selecting Y-axis column
     const dropdownForeignObjectY = g1.append('foreignObject')
@@ -82,10 +119,6 @@ const setupPlot = (data) => {
         .append('xhtml:option')
         .attr('value', d => d)
         .text(d => d);
-
-    circles.on('click', (event) => 
-        console.log(event.target)
-    )
 
     // Styling for the select element
     dropdownSelectY.style('width', '100%').style('padding', '4px').style('font-size', '14px');
@@ -140,10 +173,6 @@ const updatePlot = (data) => {
                      .range([0, inner_width]);
 
     const g1 = svg.select('g');
-    
-    // Remove the previous axes
-    // g1.select('.x-axis').remove();
-    // g1.select('.y-axis').remove();
 
     // the axis
     const xAxis = d3.axisBottom(xscaleNew)
@@ -160,18 +189,10 @@ const updatePlot = (data) => {
     g1.select('.y-axis')
         .transition()
         .call(yAxis)
-        .duration(500)
-
-    // Update the axes
-    // g1.append('g').attr('class', 'x-axis')
-    // .call(xAxis)
-    // .attr('transform', `translate(0,${inner_height})`);
-    
-    // g1.append('g').attr('class', 'y-axis')
-    // .call(yAxis);            
+        .duration(500)          
         
     // Update circles
-    g1.selectAll('circle')
+    var circles = g1.selectAll('circle')
         .data(data)
         .transition()
         .duration(500)
