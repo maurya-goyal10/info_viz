@@ -45,7 +45,10 @@ var mouseover = d => {
     tooltip.style("opacity", 1)
     .html(`${d.target.__data__.web_name} <br> 
         (${d.target.__data__.position}) <br>
-        ${d.target.__data__.team}`)
+        ${d.target.__data__.team} <br>
+        ${selected_value_x}: ${d.target.__data__[selected_value_x]} <br>
+        ${selected_value_y}: ${d.target.__data__[selected_value_y]} <br>
+        ${selected_value_z}: ${d.target.__data__[selected_value_z]} <br>`)
     .style("left", (+d.pageX+20) + "px")
     .style("top", (d.pageY) + "px")
 };
@@ -126,7 +129,11 @@ const setupPlot = (data) => {
         .text(d => d);
 
     // Styling for the select element
+    dropdownSelectY.select(`option[value=${selected_value_y}]`).attr('selected',"selected")
+   
     dropdownSelectY.style('width', '100%').style('padding', '4px').style('font-size', '14px');
+
+
 
     // Event listener for dropdown change
     dropdownSelectY.on('change', function() {
@@ -144,13 +151,15 @@ const setupPlot = (data) => {
     const dropdownDivX = dropdownForeignObjectX.append('xhtml:div').style('display', 'inline-block');
     const dropdownSelectX = dropdownDivX.append('xhtml:select');
 
-
+    
     dropdownSelectX.selectAll('option')
-        .data(columns)
-        .enter()
-        .append('xhtml:option')
-        .attr('value', d => d)
-        .text(d => d);
+    .data(columns)
+    .enter()
+    .append('xhtml:option')
+    .attr('value', d => d)
+    .text(d => d);
+    
+    dropdownSelectX.select(`option[value=${selected_value_x}]`).attr('selected',"selected")
 
     // Styling for the select element
     dropdownSelectX.style('width', '100%').style('padding', '4px').style('font-size', '14px');
@@ -177,6 +186,8 @@ const setupPlot = (data) => {
         .append('xhtml:option')
         .attr('value', d => d)
         .text(d => d);
+
+    dropdownSelectZ.select(`option[value=${selected_value_z}]`).attr('selected',"selected")
 
     // Styling for the select element
     dropdownSelectZ.style('width', '100%').style('padding', '4px').style('font-size', '14px');
