@@ -7,8 +7,9 @@ const svg_height = +getComputedStyle(el_svg).getPropertyValue('height').slice(0,
 const svg = d3.select("svg");
 
 // Default value for selected x-axis and y-axis column
-let selected_value_x = 'expected_goals';
-let selected_value_y = 'goals_scored'
+var selected_value_x = 'expected_goals';
+var selected_value_y = 'goals_scored';
+var selected_value_z = 'now_cost';
 
 // Parameters for the plot
 const margin = { top: 50, left: 250, right: 20, bottom: 70 };
@@ -27,6 +28,10 @@ const dropdown1Y = inner_height + dropdownMargin + dropdownMargin;
 const dropdown2X = -1 * dropdownWidth - dropdownMargin;
 const dropdown2Y = (inner_height - dropdownWidth) / 2 + dropdownMargin;
 
+// Dropdown position for the one in Z axis
+const dropdown3X = (inner_width - dropdownWidth) / 2 + dropdownMargin;
+const dropdown3Y = -dropdownHeight-10;
+
 // Tooltip
 var tooltip = d3.select("body")
     .append("div")
@@ -35,28 +40,22 @@ var tooltip = d3.select("body")
 
 // mouse over function depending in the datapoint d
 var mouseover = d => {
+    d.target.style.stroke = "black";
+
     tooltip.style("opacity", 1)
-    .html(`${d.target.__data__.name} <br> 
+    .html(`${d.target.__data__.web_name} <br> 
         (${d.target.__data__.position}) <br>
         ${d.target.__data__.team}`)
     .style("left", (+d.pageX+20) + "px")
     .style("top", (d.pageY) + "px")
 };
 
-var mousemove = d => {
-    // tooltip
-    // .html(`${d.target.__data__.name} <br> 
-    //     (${d.target.__data__.position}) <br>
-    //     ${d.target.__data__.team}`)
-    // .style("left", (+d.pageX+20) + "px")
-    // .style("top", (d.pageY) + "px")
-};
-
 // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
 var mouseleave = d => {
+    d.target.style.stroke = "none";
     tooltip
     .transition()
-    .duration(1000)
+    .duration(500)
     .style("opacity", 0)};
 
 
@@ -72,6 +71,10 @@ const setupPlot = (data) => {
     const yscale = d3.scaleLinear()
                     .domain([0, d3.max(data, d => d[selected_value_y])])
                     .range([inner_height, 0]);
+    const zscale = d3.scaleLinear()
+                    .domain([d3.min(data, d=>d[selected_value_z]),d3.max(data, d=>d[selected_value_z])])
+                    // .range(["#bcdfeb","#0c2026"]);
+                    .range([4,12]);
 
     // Axis
     const xAxis = d3.axisBottom(xscale)
@@ -93,7 +96,9 @@ const setupPlot = (data) => {
         .enter().append('circle')
         .attr('cx', d => xscale(d[selected_value_x]))
         .attr('cy', d => yscale(d[selected_value_y]))
-        .attr('r', 5)
+        .attr('r', 6)
+        // .attr('fill',d => zscale(d[selected_value_z]))
+        .attr('r',d => zscale(d[selected_value_z]))
         // for hover
         .on("mouseover", mouseover )
         .on("mousemove", mouseover )
@@ -127,7 +132,6 @@ const setupPlot = (data) => {
     dropdownSelectY.on('change', function() {
         selected_value_y = d3.select(this).property('value');
         updatePlot(data);
-
     });
 
     // Add dropdown for selecting X-axis column
@@ -135,7 +139,7 @@ const setupPlot = (data) => {
         .attr('x', dropdown1X)
         .attr('y', dropdown1Y)
         .attr('width', dropdownWidth)
-        .attr('height', dropdownHeight);
+        .attr('height', dropdownHeight)
 
     const dropdownDivX = dropdownForeignObjectX.append('xhtml:div').style('display', 'inline-block');
     const dropdownSelectX = dropdownDivX.append('xhtml:select');
@@ -156,6 +160,34 @@ const setupPlot = (data) => {
         selected_value_x = d3.select(this).property('value');
         updatePlot(data);
     });
+
+    // Add dropdown for selecting Z-axis column
+    const dropdownForeignObjectZ = g1.append('foreignObject')
+        .attr('x', dropdown3X)
+        .attr('y', dropdown3Y)
+        .attr('width', dropdownWidth)
+        .attr('height', dropdownHeight);
+
+    const dropdownDivZ = dropdownForeignObjectZ.append('xhtml:div').style('display', 'inline-block');
+    const dropdownSelectZ = dropdownDivZ.append('xhtml:select');
+
+    dropdownSelectZ.selectAll('option')
+        .data(columns)
+        .enter()
+        .append('xhtml:option')
+        .attr('value', d => d)
+        .text(d => d);
+
+    // Styling for the select element
+    dropdownSelectZ.style('width', '100%').style('padding', '4px').style('font-size', '14px');
+
+    // Event listener for dropdown change
+    dropdownSelectZ.on('change', function() {
+        selected_value_z = d3.select(this).property('value');
+        updatePlot(data);
+    });
+
+
 };
 
 // Function to update the plot based on new selection
@@ -171,6 +203,12 @@ const updatePlot = (data) => {
                      .domain([Math.min(0,d3.min(data, d => d[selected_value_x]))
                         ,d3.max(data, d => d[selected_value_x])])
                      .range([0, inner_width]);
+
+    const zscaleNew = d3.scaleLinear()
+                    .domain([d3.min(data, d=>d[selected_value_z]),d3.max(data, d=>d[selected_value_z])])
+                    // .range(["#bcdfeb","#0c2026"]);
+                    .range([4,12]);
+
 
     const g1 = svg.select('g');
 
@@ -197,7 +235,8 @@ const updatePlot = (data) => {
         .transition()
         .duration(500)
         .attr('cx', d => xscaleNew(d[selected_value_x]))
-        .attr('cy', d => yscaleNew(d[selected_value_y]));
+        .attr('cy', d => yscaleNew(d[selected_value_y]))
+        .attr('r', d => zscaleNew(d[selected_value_z]))
 };
 
 // Fetch CSV data and set up the initial plot
