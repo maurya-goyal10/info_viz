@@ -17,7 +17,7 @@ const inner_width = svg_width - margin.left - margin.right;
 const inner_height = svg_height - margin.top - margin.bottom;
 
 const dropdownMargin = 20; // Margin between x-axis and dropdown
-const dropdownWidth = 150; // Width of the dropdown
+const dropdownWidth = 200; // Width of the dropdown
 const dropdownHeight = 30;
 
 // Dropdown position for the one in X axis
@@ -114,8 +114,10 @@ const setupPlot = (data) => {
         .attr('width', dropdownWidth)
         .attr('height', dropdownHeight);
 
-    const dropdownDivY = dropdownForeignObjectY.append('xhtml:div').style('display', 'inline-block');
-    const dropdownSelectY = dropdownDivY.append('xhtml:select');
+    const dropdownDivY = dropdownForeignObjectY.append('xhtml:div')
+    .style('display', 'inline-block')
+    const dropdownSelectY = dropdownDivY.html("Y Axis:&nbsp")
+    .append('xhtml:select');
 
     // Get all available columns from the CSV data
     // make them the columns we need
@@ -131,7 +133,7 @@ const setupPlot = (data) => {
     // Styling for the select element
     dropdownSelectY.select(`option[value=${selected_value_y}]`).attr('selected',"selected")
    
-    dropdownSelectY.style('width', '100%').style('padding', '4px').style('font-size', '14px');
+    dropdownSelectY.style('width', '70%').style('padding', '4px').style('font-size', '14px');
 
 
 
@@ -148,10 +150,12 @@ const setupPlot = (data) => {
         .attr('width', dropdownWidth)
         .attr('height', dropdownHeight)
 
-    const dropdownDivX = dropdownForeignObjectX.append('xhtml:div').style('display', 'inline-block');
-    const dropdownSelectX = dropdownDivX.append('xhtml:select');
-
+    const dropdownDivX = dropdownForeignObjectX.append('xhtml:div')
+    .style('display', 'inline-flex')
+    .style('align-items', 'center');
     
+    const dropdownSelectX = dropdownDivX.html("X Axis:&nbsp").append('xhtml:select');
+
     dropdownSelectX.selectAll('option')
     .data(columns)
     .enter()
@@ -162,7 +166,7 @@ const setupPlot = (data) => {
     dropdownSelectX.select(`option[value=${selected_value_x}]`).attr('selected',"selected")
 
     // Styling for the select element
-    dropdownSelectX.style('width', '100%').style('padding', '4px').style('font-size', '14px');
+    dropdownSelectX.style('width', '70%').style('padding', '4px').style('font-size', '14px');
 
     // Event listener for dropdown change
     dropdownSelectX.on('change', function() {
@@ -177,8 +181,10 @@ const setupPlot = (data) => {
         .attr('width', dropdownWidth)
         .attr('height', dropdownHeight);
 
-    const dropdownDivZ = dropdownForeignObjectZ.append('xhtml:div').style('display', 'inline-block');
-    const dropdownSelectZ = dropdownDivZ.append('xhtml:select');
+    const dropdownDivZ = dropdownForeignObjectZ.append('xhtml:div')
+    .style('display', 'inline-flex')
+    .style('align-items', 'center');
+    const dropdownSelectZ = dropdownDivZ.html("Area:&nbsp").append('xhtml:select');
 
     dropdownSelectZ.selectAll('option')
         .data(columns)
