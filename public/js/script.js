@@ -1,5 +1,5 @@
 // Select the SVG element and get its dimensions
-const el_svg = document.querySelector('svg');
+const el_svg = document.querySelector('.one');
 const svg_width = +getComputedStyle(el_svg).getPropertyValue('width').slice(0, -2);
 const svg_height = +getComputedStyle(el_svg).getPropertyValue('height').slice(0, -2);
 
@@ -41,7 +41,6 @@ var tooltip = d3.select("body")
 // mouse over function depending in the datapoint d
 var mouseover = d => {
     d.target.style.stroke = "black";
-
     tooltip.style("opacity", 1)
     .html(`${d.target.__data__.web_name} <br> 
         (${d.target.__data__.position}) <br>
@@ -256,6 +255,16 @@ const updatePlot = (data) => {
         .attr('r', d => zscaleNew(d[selected_value_z]))
 };
 
+// filter conditions form
+var submitForm = (e) => {
+    var formData = new FormData(document.getElementById("filter_first_plot"));
+
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1]);
+    }
+    
+}
+
 // Fetch CSV data and set up the initial plot
 d3.csv('../data/players.csv')
     .then(data => {
@@ -269,3 +278,6 @@ d3.csv('../data/players.csv')
         });
         setupPlot(data); // Set up initial plot
     });
+
+
+

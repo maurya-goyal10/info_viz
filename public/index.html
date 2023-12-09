@@ -7,8 +7,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 <body>
-    <h1>SCATTER PLOT</h1>
-    <svg> </svg>
+    <div class="container">
+        <div class="first_plot">
+            <div class="dropdown">
+                <button>Open Form</button>
+                <div class="dropdown-content">
+                    <h2>Filter conditions: </h2>
+                    <form action="index.html" method="post" id="filter_first_plot" onsubmit="return submitForm(event)">
+                        <label for="minutesPlayed">Minutes Played:</label>
+                        <select id="minutesPlayed" name="minutesPlayed">
+                        <option value=">=0" selected="selected">include all</option>
+                        <option value=">0">Greater than 0</option>
+                        <option value=">250">Greater than 250</option>
+                        <option value=">500">Greater than 500</option>
+                        <option value=">900">Greater than 900</option>
+                        </select>
+                    
+                        <label for="position">Position:</label>
+                        <select id="position" name="position" multiple>
+                        <option value="FWD" selected="selected">Forward (FWD)</option>
+                        <option value="MID" selected="selected">Midfielder (MID)</option>
+                        <option value="DEF" selected="selected">Defender (DEF)</option>
+                        <option value="GK" selected="selected">Goalkeeper (GK)</option>
+                        </select>
+                    
+                        <button type="button" onclick="submitForm()">Apply Filters</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="half" id="one">
+                <svg class="one"> </svg>            
+            </div>
+        </div>
+    </div>
+    <!-- <svg> </svg> -->
     <link rel="stylesheet" href="style.css">
     <script src="js/script.js"></script>
 </body>
