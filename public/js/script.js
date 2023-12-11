@@ -48,6 +48,7 @@ var tooltip = d3.select("body")
 // mouse over function depending in the datapoint d
 var mouseover = d => {
     d.target.style.stroke = "black";
+    d.target.style.opacity = 1;
     tooltip.style("opacity", 1)
     .html(`${d.target.__data__.web_name} <br> 
         (${d.target.__data__.position}) <br>
@@ -61,7 +62,8 @@ var mouseover = d => {
 
 // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
 var mouseleave = d => {
-    d.target.style.stroke = "none";
+    d.target.style.stroke = "gray";
+    d.target.style.opacity = 0.6
     tooltip
     .transition()
     .duration(500)
