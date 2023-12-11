@@ -15,23 +15,21 @@
                     <h2>Filter conditions: </h2>
                     <form action="index.html" method="post" id="filter_first_plot" onsubmit="return submitForm(event)">
                         <label for="minutesPlayed">Minutes Played:</label>
-                        <select id="minutesPlayed" name="minutesPlayed">
-                        <option value=">=0" selected="selected">include all</option>
-                        <option value=">0">Greater than 0</option>
-                        <option value=">250">Greater than 250</option>
-                        <option value=">500">Greater than 500</option>
-                        <option value=">900">Greater than 900</option>
+                        <select id="minutesPlayed" name="minutesPlayed" class="filter minutes_filter">
+                        <option value="-1" selected="selected">include all</option>
+                        <option value="0">Greater than 0</option>
+                        <option value="250">Greater than 250</option>
+                        <option value="500">Greater than 500</option>
+                        <option value="900">Greater than 900</option>
                         </select>
                     
                         <label for="position">Position:</label>
-                        <select id="position" name="position" multiple>
+                        <select id="position" name="position" class="filter position_filter" multiple>
                         <option value="FWD" selected="selected">Forward (FWD)</option>
                         <option value="MID" selected="selected">Midfielder (MID)</option>
                         <option value="DEF" selected="selected">Defender (DEF)</option>
-                        <option value="GK" selected="selected">Goalkeeper (GK)</option>
+                        <option value="GKP" selected="selected">Goalkeeper (GK)</option>
                         </select>
-                    
-                        <button type="button" onclick="submitForm()">Apply Filters</button>
                     </form>
                 </div>
             </div>

@@ -92,10 +92,10 @@ svg{
     stroke: #E5E2E0;
 }
 
-circle{
+/* circle{
     fill: steelblue;
     opacity: 0.6;
-}
+} */
 
 body .tooltip{
     text-align: center;

@@ -32,6 +32,13 @@ const dropdown2Y = (inner_height - dropdownWidth) / 2 + dropdownMargin;
 const dropdown3X = (inner_width - dropdownWidth) / 2 + dropdownMargin;
 const dropdown3Y = -dropdownHeight-10;
 
+var filter_minutes = document.querySelector('.minutes_filter')
+var filter_position = document.querySelector('.position_filter')
+
+const colorScale = d3.scaleOrdinal()
+        .domain(['FWD','DEF','MID','GKP'])
+        .range(['#d7191c','#fdae61','#abdda4','#2b83ba'])
+
 // Tooltip
 var tooltip = d3.select("body")
     .append("div")
@@ -63,6 +70,24 @@ var mouseleave = d => {
 
 // Function to set up the initial plot
 const setupPlot = (data) => {
+    // filtering condition
+    filter_minutes.addEventListener('change', (e) => {
+        filtered_data = data.filter((f) => {
+            return f.minutes > e.target.value;
+        })
+        updatePlot(filtered_data);
+    });
+
+    filter_position.addEventListener('change', (e) => {
+        var positions =  Array.from(e.target.options).filter(option => option.selected)
+                            .map(option => option.value)
+        filtered_data = data.filter((f) => {
+            return positions.includes(f.position);
+        })
+        updatePlot(filtered_data);
+    })
+
+
     // Create the main plot area
     const g1 = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -98,9 +123,8 @@ const setupPlot = (data) => {
         .enter().append('circle')
         .attr('cx', d => xscale(d[selected_value_x]))
         .attr('cy', d => yscale(d[selected_value_y]))
-        .attr('r', 6)
-        // .attr('fill',d => zscale(d[selected_value_z]))
         .attr('r',d => zscale(d[selected_value_z]))
+        .attr('fill',d => colorScale(d['position']))
         // for hover
         .on("mouseover", mouseover )
         .on("mousemove", mouseover )
@@ -133,8 +157,6 @@ const setupPlot = (data) => {
     dropdownSelectY.select(`option[value=${selected_value_y}]`).attr('selected',"selected")
    
     dropdownSelectY.style('width', '70%').style('padding', '4px').style('font-size', '14px');
-
-
 
     // Event listener for dropdown change
     dropdownSelectY.on('change', function() {
@@ -202,12 +224,20 @@ const setupPlot = (data) => {
         selected_value_z = d3.select(this).property('value');
         updatePlot(data);
     });
-
-
 };
 
 // Function to update the plot based on new selection
 const updatePlot = (data) => {
+    data =  data.filter((f) => {
+        return f.minutes > filter_minutes.value;
+    })
+    
+    data = data.filter((f) => {
+        return Array.from(filter_position.options)
+            .filter(option => option.selected)
+            .map(option => option.value)
+            .includes(f.position)
+    })
 
     ymin = Math.min(0,d3.min(data, d => d[selected_value_y]))
 
@@ -247,23 +277,27 @@ const updatePlot = (data) => {
         
     // Update circles
     var circles = g1.selectAll('circle')
-        .data(data)
-        .transition()
+        .data(data);
+
+    circles.transition()
         .duration(500)
         .attr('cx', d => xscaleNew(d[selected_value_x]))
         .attr('cy', d => yscaleNew(d[selected_value_y]))
         .attr('r', d => zscaleNew(d[selected_value_z]))
-};
+        .attr('fill',d => colorScale(d['position']))
 
-// filter conditions form
-var submitForm = (e) => {
-    var formData = new FormData(document.getElementById("filter_first_plot"));
-
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
-    }
+    circles.enter().append('circle')        
+    .attr('cx', d => xscaleNew(d[selected_value_x]))
+    .attr('cy', d => yscaleNew(d[selected_value_y]))
+    .attr('r',d => zscaleNew(d[selected_value_z]))
+    .attr('fill',d => colorScale(d['position']))
+    // for hover
+    .on("mouseover", mouseover )
+    .on("mousemove", mouseover )
+    .on("mouseleave", mouseleave );
     
-}
+    circles.exit().remove()
+};
 
 // Fetch CSV data and set up the initial plot
 d3.csv('../data/players.csv')
