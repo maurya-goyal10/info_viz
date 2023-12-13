@@ -1,7 +1,7 @@
 body, html {
     height: 100%;
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .dropdown {
@@ -106,4 +106,62 @@ body .tooltip{
     border-width: 1px;
     border-radius: 5px;
     padding: 10px
+}
+
+#container {
+    display: flex;
+}
+
+#chart {
+    flex: 1;
+}
+
+/* Gameweeks grid */
+#player-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 100px;
+}
+
+/* A single Gameweek box*/
+.player-box {
+    border: 1px solid black;
+    padding: 10px;
+    margin: 0px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    text-align: center;
+    width: 50px; /* Add this line */
+    height: 50px; /* Add this line */
+    line-height: 50px; /* Add this line */
+}
+
+/* Gameweek box when selected - change color*/
+.player-box.selected {
+    background-color: hsl(132, 95%, 36%);
+}
+
+#spider-chart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    height: 400px;
+}
+
+/* Feature selection for the spider chart */
+#feature-select {
+    width: 200px; /* Adjust as needed */
+}
+
+/* Selected features table for the spider chart*/
+#features-table {
+    width: 200px; /* Adjust as needed */
+}
+
+/* Container for the features table */
+#features-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between features */
 }

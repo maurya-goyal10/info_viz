@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spider Chart</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+    <div id="search-container">
+        <input type="text" id="player-search" placeholder="Enter player name">
+        <div id="player-list"></div>
+    </div>
+    <div id="container">
+        <div id="chart"></div>
+        <div id="player-grid">
+            <div id="gameweek1" class="player-box">GW1</div>
+            <div id="gameweek2" class="player-box">GW2</div>
+            <div id="gameweek3" class="player-box">GW3</div>
+            <div id="gameweek4" class="player-box">GW4</div>
+            <div id="gameweek5" class="player-box">GW5</div>
+            <div id="gameweek6" class="player-box">GW6</div>
+            <div id="gameweek7" class="player-box">GW7</div>
+            <div id="gameweek8" class="player-box">GW8</div>
+            <div id="gameweek9" class="player-box">GW9</div>
+            <div id="gameweek10" class="player-box">GW10</div>
+            <div id="gameweek11" class="player-box">GW11</div>
+            <div id="gameweek12" class="player-box">GW12</div>
+        </div>
+    </div>
+    <select id="feature-select">
+        <option value="assists">Assists</option>
+        <option value="goals_scored">Goals Scored</option>
+        <option value="expected_assists">Expected Assists</option>
+        <option value="expected_goals">Expected Goals</option>
+        <option value="bonus">Bonus</option>
+    </select>
+    <div id="features-container">
+        <table id="feature-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/spider.js"></script>
+    <div id="chart"></div>
+    <script>
+        // Configuration
+        var config = {
+            w: 300,
+            h: 300,
+            maxValue: 1,
+            levels: 5,
+            ExtraWidthX: 300
+        };
+    
+        var data = [];
+        var filteredData = [];
+
+        // Load the CSV file
+        d3.csv("../data/individual_gw.csv").then(function(csvData) {
+            // Filter the data to only include the rows you are interested in
+            filteredData = csvData.filter(function(row) {
+                // Replace this with your condition
+                return row['name'] === 'Ollie Watkins';
+            });
+    
+            // Map the filtered data to the format expected by the drawSpiderChart function
+            data = [
+                    {axis: 'assists', value: filteredData.map(function(row) {return parseInt(row['assists']);})},
+                    {axis: 'goals_scored', value: filteredData.map(function(row) {return parseInt(row['goals_scored']);})},
+                    {axis: 'expected_assists', value: filteredData.map(function(row) {return parseFloat(row['expected_assists']);})},
+                    {axis: 'expected_goals', value: filteredData.map(function(row) {return parseFloat(row['expected_goals']);})},
+                    {axis: 'bonus', value: filteredData.map(function(row) {return parseInt(row['bonus']);})}
+                ];
+            
+            // Call the drawSpiderChart function with the mapped data <div id="data-display"></div>
+            drawSpiderChart("#chart", data, config);
+        }).catch(function(error) {
+            console.log(error);
+        });
+    </script>
+</body>
+</html>
