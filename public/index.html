@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FPL PLAYER COMPARISON</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class="container">
         <div class="first_plot">
+            <div class="first_heading">
+                <h1>All players general performance throughout the season</h1>
+            </div>
             <div class="dropdown">
-                <button>Open Form</button>
+                <button>Filters <i class="fa fa-filter"></i></button>
                 <div class="dropdown-content">
                     <h2>Filter conditions: </h2>
                     <form action="index.html" method="post" id="filter_first_plot" onsubmit="return submitForm(event)">
@@ -35,7 +39,13 @@
             </div>
 
             <div class="half" id="one">
-                <svg class="one"> </svg>            
+                <svg class="one"> </svg>    
+                <div class="player-info">
+                    <img class="player_photo" > 
+                    <h3 class="player_name"></h3>
+                    <h5 class="player-club"></h5>
+                    <p class="player-club-pos"></p>
+                </div>        
             </div>
         </div>
     </div>

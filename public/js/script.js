@@ -7,8 +7,8 @@ const svg_height = +getComputedStyle(el_svg).getPropertyValue('height').slice(0,
 const svg = d3.select("svg");
 
 // Default value for selected x-axis and y-axis column
-var selected_value_x = 'expected_goals';
-var selected_value_y = 'goals_scored';
+var selected_value_x = 'influence';
+var selected_value_y = 'total_points';
 var selected_value_z = 'now_cost';
 
 // Parameters for the plot
@@ -28,7 +28,7 @@ const dropdown1Y = inner_height + dropdownMargin + dropdownMargin;
 const dropdown2X = -1 * dropdownWidth - dropdownMargin;
 const dropdown2Y = (inner_height - dropdownWidth) / 2 + dropdownMargin;
 
-// Dropdown position for the one in Z axis
+// Dropdown position for the one in Z axis i.e. the Area
 const dropdown3X = (inner_width - dropdownWidth) / 2 + dropdownMargin;
 const dropdown3Y = -dropdownHeight-10;
 
@@ -38,6 +38,14 @@ var filter_position = document.querySelector('.position_filter')
 const colorScale = d3.scaleOrdinal()
         .domain(['FWD','DEF','MID','GKP'])
         .range(['#d7191c','#fdae61','#abdda4','#2b83ba'])
+
+// info-div
+var info_div = document.querySelector('.player-info');
+var player_name = document.querySelector('.player_name')
+var player_photo = document.querySelector('.player_photo');
+var player_list = document.querySelector('.player_list');
+var player_club = document.querySelector('.player-club');
+var player_addn_info = document.querySelector('.player-club-pos');
 
 // Tooltip
 var tooltip = d3.select("body")
@@ -68,6 +76,24 @@ var mouseleave = d => {
     .transition()
     .duration(500)
     .style("opacity", 0)};
+
+var mouse_single_click = d => {
+    console.log("clicked")
+    player_name.innerHTML = d.target.__data__.name;
+    player_photo.src = `https://resources.premierleague.com/premierleague/photos/players/250x250/${d.target.__data__.picture_id}.png`
+    var ck_order = d.target.__data__.corners_and_indirect_freekicks_order
+    ? d.target.__data__.corners_and_indirect_freekicks_order : "NA"
+    var fk_order = d.target.__data__.direct_freekicks_order
+    ? d.target.__data__.direct_freekicks_order : "NA"
+    var pk_order = d.target.__data__.penalties_order
+    ? d.target.__data__.penalties_order : "NA"
+    player_club.innerHTML = `${d.target.__data__.position} <br> ${d.target.__data__.team}`
+    player_addn_info.innerHTML = `Selected by ${d.target.__data__.selected_by_percent}% players <br>
+    Penalties Order: ${pk_order} <br>
+    Freekicks Order: ${pk_order} <br>
+    Corner Order: ${fk_order} <br> 
+    `;
+}
 
 
 // Function to set up the initial plot
@@ -130,7 +156,8 @@ const setupPlot = (data) => {
         // for hover
         .on("mouseover", mouseover )
         .on("mousemove", mouseover )
-        .on("mouseleave", mouseleave );
+        .on("mouseleave", mouseleave )
+        .on("click",mouse_single_click);
 
     // Add dropdown for selecting Y-axis column
     const dropdownForeignObjectY = g1.append('foreignObject')
@@ -145,8 +172,19 @@ const setupPlot = (data) => {
     .append('xhtml:select');
 
     // Get all available columns from the CSV data
-    // make them the columns we need
-    const columns = Object.keys(data[0]);
+    // make them the columns we need removing all the other unnecessary columns the data 
+    // for which was either not quantitative or basically not required
+    const options = ['now_cost','expected_goals_conceded','minutes','points_per_game','expected_goals_conceded_per_90',
+        'value_season','starts','chance_of_playing_this_round','form','expected_goal_involvements','own_goals','saves_per_90',
+        'assists','expected_assists_per_90','goals_conceded','bonus','yellow_cards', 'expected_goals','event_points',
+        'value_form','goals_scored','expected_goals_per_90','influence','threat','penalties_saved',
+        'clean_sheets_per_90','starts_per_90','selected_by_percent','total_points','saves',
+        'bps','expected_goal_involvements_per_90','expected_assists','creativity']
+    const columns = Object.keys(data[0])
+        .filter(f =>  
+            options.includes(f)
+    );
+    // console.log(columns)
 
     dropdownSelectY.selectAll('option')
         .data(columns)

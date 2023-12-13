@@ -70,11 +70,20 @@ button {
     flex-direction: column;
 }
 
+.first_heading{
+    text-align: center;
+}
+
+.first_heading h1{
+    text-transform: capitalize;
+}
+
 .half {
     margin: 2%;
     width: 100%;
     height: 100%;
     flex: 1;
+    display: flex;
     /* border: 1px solid #ccc;
     box-sizing: border-box; */
 }
@@ -107,4 +116,23 @@ body .tooltip{
     border-width: 1px;
     border-radius: 5px;
     padding: 10px
+}
+
+.player-info{
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    text-align: center;
+}
+
+.player_name,.player-club{
+    margin: 0;
+}
+
+.player_photo{
+    width: 30%;
+}
+
+.player_list{
+    list-style: none;
 }
