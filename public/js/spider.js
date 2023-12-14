@@ -313,6 +313,7 @@
     }
   } 
   
+  /*
   // Get the select element and the table body
   var select = document.getElementById('feature-select');
   var tableBody = document.getElementById('feature-table').getElementsByTagName('tbody')[0];
@@ -335,6 +336,10 @@
         button.addEventListener('click', function() {
             // Remove the feature from the data
             data = data.filter(function(e) {
+                return e.axis !== d.axis;
+            });
+            // Remove the feature from the data
+            data2 = data2.filter(function(e) {
                 return e.axis !== d.axis;
             });
 
@@ -365,8 +370,14 @@
     // Add the feature to the data
     data.push({
         axis: feature,
-        value: filteredData.map(function(row) {return parseInt(row[feature]);})
+        value: filteredData.map(function(row) {return parseFloat(row[feature]);})
     });
+
+    // Add the feature to the data
+    data2.push({
+      axis: feature,
+      value: filteredData2.map(function(row) {return parseFloat(row[feature]);})
+  });
 
     // Create a new div with the feature name
     var featureDiv = document.createElement('div');
@@ -378,6 +389,10 @@
         data = data.filter(function(d) {
             return d.axis !== feature;
         });
+        // Remove the feature from the data
+        data2 = data2.filter(function(d) {
+          return d.axis !== feature;
+      });
 
         // Remove the feature div
         featureDiv.remove();
@@ -394,6 +409,102 @@
     drawSpiderChart("#chart", data, data2, config);
     updateTableAndOptions();
   });
+  */
+
+  // Get the select element and the features list
+var select = document.getElementById('feature-select');
+var featuresList = document.getElementById('features-list');
+
+// Function to update the list and the dropdown options
+function updateListAndOptions() {
+  // Clear the list
+  while (featuresList.firstChild) {
+      featuresList.removeChild(featuresList.firstChild);
+  }
+
+  // Populate the list with the current features
+  data.forEach(function(d) {
+      var listItem = document.createElement('li');
+      listItem.textContent = d.axis;
+      var button = document.createElement('button');
+      button.textContent = 'x';
+      button.addEventListener('click', function() {
+          // Remove the feature from the data
+          data = data.filter(function(e) {
+              return e.axis !== d.axis;
+          });
+          // Remove the feature from the data
+          data2 = data2.filter(function(e) {
+              return e.axis !== d.axis;
+          });
+
+          // Update the chart, the list, and the dropdown options
+          drawSpiderChart("#chart", data, data2, config);
+          updateListAndOptions();
+      });
+      listItem.appendChild(button);
+      featuresList.appendChild(listItem);
+  });
+
+  // Update the dropdown options
+  var options = select.options;
+  for (var i = 0; i < options.length; i++) {
+      var option = options[i];
+      if (data.some(function(d) { return d.axis === option.value; })) {
+          option.style.display = 'none';
+      } else {
+          option.style.display = 'block';
+      }
+  }
+}
+
+// Redraw the chart whenever the selected option changes
+select.addEventListener('change', function() {
+  // Get the selected feature
+  var feature = select.value;
+
+  // Add the feature to the data
+  data.push({
+      axis: feature,
+      value: filteredData.map(function(row) {return parseFloat(row[feature]);})
+  });
+
+  // Add the feature to the data
+  data2.push({
+    axis: feature,
+    value: filteredData2.map(function(row) {return parseFloat(row[feature]);})
+});
+
+  // Create a new div with the feature name
+  var featureDiv = document.createElement('div');
+  featureDiv.textContent = feature;
+
+  // Add a click event listener to the feature div
+  featureDiv.addEventListener('click', function() {
+      // Remove the feature from the data
+      data = data.filter(function(d) {
+          return d.axis !== feature;
+      });
+      // Remove the feature from the data
+      data2 = data2.filter(function(d) {
+        return d.axis !== feature;
+    });
+
+      // Remove the feature div
+      featureDiv.remove();
+
+      // Update the chart and the dropdown options
+      drawSpiderChart("#chart", data, data2, config);
+      updateListAndOptions();
+  });
+
+  // Append the div to the features container
+  document.getElementById('features-container').appendChild(featureDiv);
+
+  // Update the chart, the list, and the dropdown options
+  drawSpiderChart("#chart", data, data2, config);
+  updateListAndOptions();
+});
 
   // Get the player boxes
   var playerBoxes = document.getElementsByClassName('player-box');
@@ -407,7 +518,52 @@
         // Update the chart
         updateChart();
     });
-  } 
+  }
+
+  var selectAllButton1 = document.getElementById('select-all-button-1');
+  var unselectAllButton1 = document.getElementById('unselect-all-button-1');
+  var selectAllButton2 = document.getElementById('select-all-button-2');
+  var unselectAllButton2 = document.getElementById('unselect-all-button-2');
+
+  // Add a click event listener to the select all button for the first grid
+  selectAllButton1.addEventListener('click', function() {
+    for (var i = 0; i < playerBoxes.length/2; i++) {
+      playerBoxes[i].classList.add('selected');
+    }
+
+    // Update the chart
+    updateChart();
+  });
+
+  // Add a click event listener to the unselect all button for the first grid
+  unselectAllButton1.addEventListener('click', function() {
+    for (var i = 0; i < playerBoxes.length/2; i++) {
+      playerBoxes[i].classList.remove('selected');
+    }
+
+    // Update the chart
+    updateChart();
+  });
+
+  // Add a click event listener to the select all button for the second grid
+  selectAllButton2.addEventListener('click', function() {
+    for (var i = 0; i < playerBoxes.length/2; i++) {
+      playerBoxes[i+12].classList.add('selected');
+    }
+
+    // Update the chart
+    updateChart();
+  });
+
+  // Add a click event listener to the unselect all button for the second grid
+  unselectAllButton2.addEventListener('click', function() {
+    for (var i = 0; i < playerBoxes.length/2; i++) {
+      playerBoxes[i+12].classList.remove('selected');
+    }
+
+    // Update the chart
+    updateChart();
+  });
 
   // Function to update the chart based on the selected players
   function updateChart() {
@@ -486,5 +642,5 @@
   // Draw the chart initially with all players
   window.onload = function() {
     updateChart();
-    updateTableAndOptions();
+    updateListAndOptions();
   }

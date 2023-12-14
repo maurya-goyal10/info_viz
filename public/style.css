@@ -128,11 +128,45 @@ body .tooltip{
     height: 100vh;
 }
 
-#features-container {
+/* #features-container {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    position: absolute;
+    top: 30px;
+    left: 750px;
+} */
+
+/* Selected features table for the spider chart*/
+#features-table {
+    width: 200px; 
+    overflow-y: auto;
+}
+
+/* Feature selection for the spider chart */
+#feature-select {
+    width: 200px; /* Adjust as needed */
+    position: absolute;
+    top: 100px;
+    left: 550px;
+}
+
+#features-container {
+    position: absolute;
+    top: 100px;
+    left: 780px;
+}
+
+#features-list {
+    position: absolute;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    width: 150px; /* Adjust as needed */
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 #player-grid {
@@ -153,8 +187,8 @@ body .tooltip{
 
 #chart {
     position: absolute;
-    top: 50%;
-    left: 55%;
+    top: 60%;
+    left: 58%;
     transform: translate(-50%, -50%);
 }
 
@@ -191,16 +225,6 @@ body .tooltip{
     text-align: center; /* Add this line */
 }
 
-/* Feature selection for the spider chart */
-#feature-select {
-    width: 200px; /* Adjust as needed */
-}
-
-/* Selected features table for the spider chart*/
-#features-table {
-    width: 200px; /* Adjust as needed */
-}
-
 /* Container for the features table */
 /* #features-container {
     display: flex;
@@ -229,7 +253,7 @@ body .tooltip{
     overflow-y: auto;
     background-color: #fff;
     border: 1px solid #ccc;
-    width: 200px; /* Adjust as needed */
+    width: 148px; /* Adjust as needed */
     padding: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -240,7 +264,7 @@ body .tooltip{
     gap: 10px;
     position: absolute;
     top: 10px;
-    left: 1000px;
+    left: 1100px;
 }
 
 #player-list-container2 {
@@ -255,7 +279,31 @@ body .tooltip{
     overflow-y: auto;
     background-color: #fff;
     border: 1px solid #ccc;
-    width: 200px; /* Adjust as needed */
+    width: 148px; /* Adjust as needed */
     padding: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#select-all-button-1 {
+    position: absolute;
+    top: 500px;
+    left: 70px;
+}
+
+#unselect-all-button-1 {
+    position: absolute;
+    top: 500px;
+    left: 230px;
+}
+
+#select-all-button-2 {
+    position: absolute;
+    top: 500px;
+    left: 1175px;
+}
+
+#unselect-all-button-2 {
+    position: absolute;
+    top: 500px;
+    left: 1335px;
 }
