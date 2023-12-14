@@ -1,57 +1,9 @@
-  // Add this at the beginning of your script
-  var playerSearch = document.getElementById('player-search');
-  var playerList = document.getElementById('player-list');
 
-  playerSearch.addEventListener('input', function() {
-    var searchValue = playerSearch.value.toLowerCase();
-
-    // Filter the data to only include the players whose names start with the search value
-    var matchingPlayers = csvData.filter(function(row) {
-        return row['name'].toLowerCase().includes(searchValue);
-    });
-
-    // Clear the player list
-    playerList.innerHTML = '';
-
-    // Add the matching players to the player list
-    matchingPlayers.forEach(function(player) {
-        var playerItem = document.createElement('div');
-        playerItem.textContent = player['name'];
-
-        var selectButton = document.createElement('button');
-        selectButton.textContent = 'Select';
-        selectButton.addEventListener('click', function() {
-            // When the select button is clicked, draw the spider chart for that player
-            var playerName = player['name'];
-
-            // Filter the data to only include the rows for the selected player
-            filteredData = csvData.filter(function(row) {
-                return row['name'] === playerName;
-            });
-
-            // Map the filtered data to the format expected by the drawSpiderChart function
-            data = [
-                {axis: 'assists', value: filteredData.map(function(row) {return parseInt(row['assists']);})[0]},
-                {axis: 'goals_scored', value: filteredData.map(function(row) {return parseInt(row['goals_scored']);})[0]},
-                {axis: 'expected_assists', value: filteredData.map(function(row) {return parseFloat(row['expected_assists']);})[0]},
-                {axis: 'expected_goals', value: filteredData.map(function(row) {return parseFloat(row['expected_goals']);})[0]},
-                {axis: 'bonus', value: filteredData.map(function(row) {return parseInt(row['bonus']);})[0]}
-            ];
-
-            // Call the drawSpiderChart function with the mapped data
-            drawSpiderChart("#chart", data, config);
-        });
-
-        playerItem.appendChild(selectButton);
-        playerList.appendChild(playerItem);
-    });
-  });
-  
   // Create a function to draw the spider chart
-  function drawSpiderChart(id, data, config) {
+  /* function drawSpiderChart(id, data, data2, config) {
 
     d3.select(id).select("svg").remove();
-
+  
     var allAxis = data.map(function(i, j){return i.axis}),
         total = allAxis.length,
         radius = Math.min(config.w/2, config.h/2),
@@ -69,8 +21,8 @@
     var axisGrid = svg.append("g").attr("class", "axisWrapper");
   
     // Calculate maxValue
-    var maxValue = Math.max(...data.map(function(d) { return d.value; }));
-
+    var maxValue = Math.max(...data.map(function(d) { return d.value; }), ...data2.map(function(d) { return d.value; }));
+  
     // Draw the background circles
     axisGrid.selectAll(".levels")
       .data(d3.range(1, (config.levels+1)).reverse())
@@ -81,70 +33,285 @@
       .style("fill", "#CDCDCD")
       .style("stroke", "#CDCDCD")
       .style("fill-opacity", 0.1);
-
+  
     // Add the values on the axis
-    for(var j=0; j<config.levels; j++){
-        var levelFactor = radius*((j+1)/config.levels);
-        axisGrid.selectAll(".levels")
-            .data(allAxis)
-            .enter()
-            .append("svg:text")
-            .attr("x", function(d, i){return levelFactor*(1-Math.sin(i*angleSlice));})
-            .attr("y", function(d, i){return levelFactor*(1-Math.cos(i*angleSlice));})
-            .attr("class", "legend")
-            .style("font-family", "sans-serif")
-            .style("font-size", "10px")
-            .attr("fill", "#737373")
-            .text(((j+1)/config.levels)*maxValue);
+  
+    // Draw the polygons for data
+    // drawPolygon(data, "blue"); // Replace "blue" with the color you want for data
+    var polygon = svg.selectAll(".radarArea")
+          .data(data)
+          .enter()
+          .append("polygon")
+          .attr("class", "radarArea")
+          .attr("points", function(d) {
+              var points = [];
+              for (var i = 0; i < total; i++) {
+                  var x = d[i].value * radius * Math.cos(angleSlice * i - Math.PI / 2);
+                  var y = d[i].value * radius * Math.sin(angleSlice * i - Math.PI / 2);
+                  points.push([x, y]);
+              }
+              return points.join(" ");
+          })
+          .style("fill", "blue")
+          .style("fill-opacity", config.opacityArea)
+          .on('mouseover', function (d, i){
+              // Add interactivity
+          })
+          .on('mouseout', function(){
+              // Add interactivity
+      });
+    // Draw the polygons for data2
+    if (data2.length > 0) {
+      // drawPolygon(data2, "red"); // Replace "red" with the color you want for data2
+      var polygon2 = svg.selectAll(".radarArea")
+          .data(data2)
+          .enter()
+          .append("polygon")
+          .attr("class", "radarArea")
+          .attr("points", function(d) {
+              var points = [];
+              for (var i = 0; i < total; i++) {
+                  var x = d[i].value * radius * Math.cos(angleSlice * i - Math.PI / 2);
+                  var y = d[i].value * radius * Math.sin(angleSlice * i - Math.PI / 2);
+                  points.push([x, y]);
+              }
+              return points.join(" ");
+          })
+          .style("fill", "red")
+          .style("fill-opacity", config.opacityArea)
+          .on('mouseover', function (d, i){
+              // Add interactivity
+          })
+          .on('mouseout', function(){
+              // Add interactivity
+          });
     }
+  }
+  
+    function drawPolygon(data, color) {
+      var polygon = svg.selectAll(".radarArea")
+          .data(data)
+          .enter()
+          .append("polygon")
+          .attr("class", "radarArea")
+          .attr("points", function(d) {
+              var points = [];
+              for (var i = 0; i < total; i++) {
+                  var x = d[i].value * radius * Math.cos(angleSlice * i - Math.PI / 2);
+                  var y = d[i].value * radius * Math.sin(angleSlice * i - Math.PI / 2);
+                  points.push([x, y]);
+              }
+              return points.join(" ");
+          })
+          .style("fill", color)
+          .style("fill-opacity", config.opacityArea)
+          .on('mouseover', function (d, i){
+              // Add interactivity
+          })
+          .on('mouseout', function(){
+              // Add interactivity
+          });
+    } */
+  
+  function drawSpiderChart(id, data, data2, config) {
 
-    // Draw the axes
-    var axis = axisGrid.selectAll(".axis")
-      .data(allAxis)
-      .enter()
+    // Print data and data2 to the console
+    console.log('data:', data);
+    console.log('data2:', data2);
+
+
+    d3.select(id).select("svg").remove();
+
+    var allAxis = data.map(function(i, j){return i.axis}),
+        total = allAxis.length,
+        radius = Math.min(config.w/2, config.h/2),
+        Format = d3.format('%'),
+        angleSlice = Math.PI * 2 / total;
+
+    var allAxis2 = data2.map(function(i, j){return i.axis}),
+        total2 = allAxis2.length,
+        radius2 = Math.min(config.w/2, config.h/2),
+        Format2 = d3.format('%'),
+        angleSlice2 = Math.PI * 2 / total2;
+  
+    // Create the spider chart SVG
+    var svg = d3.select(id).append("svg")
+      .attr("width",  config.w + config.ExtraWidthX)
+      .attr("height", config.h)
       .append("g")
-      .attr("class", "axis");
+      .attr("transform", "translate(" + config.w/2 + "," + config.h/2 + ")");
   
-    // Append the lines
-    axis.append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", function(d, i){ return radius * Math.cos(angleSlice*i - Math.PI/2); })
-      .attr("y2", function(d, i){ return radius * Math.sin(angleSlice*i - Math.PI/2); })
-      .attr("class", "line")
-      .style("stroke", "grey")
-      .style("stroke-width", "1px");
+    // Create a wrapper for the grid & axes
+    var axisGrid = svg.append("g").attr("class", "axisWrapper");
   
-    // Append the labels
-    axis.append("text")
-      .attr("class", "legend")
-      .text(function(d){return d})
-      .style("font-size", "11px")
-      .attr("text-anchor", "middle")
-      .attr("dy", "0.35em")
-      .attr("x", function(d, i){ return radius * Math.cos(angleSlice*i - Math.PI/2); })
-      .attr("y", function(d, i){ return radius * Math.sin(angleSlice*i - Math.PI/2); });
-  
-    // Create a path function
-    var radarLine = d3.lineRadial()
-      .curve(d3.curveLinearClosed)
-      .radius(function(d) { return radius * d.value/config.maxValue; })
-      .angle(function(d,i) {  return i*angleSlice; });
+    // Calculate maxValue
+    var maxValue = Math.max(...data.map(function(d) { return d.value; }));
+    var maxValue2 = Math.max(...data2.map(function(d) { return d.value; }));
+
+    if (maxValue >= maxValue2) {
+      // Draw the background circles
+      axisGrid.selectAll(".levels")
+        .data(d3.range(1, (config.levels+1)).reverse())
+        .enter()
+        .append("circle")
+        .attr("class", "gridCircle")
+        .attr("r", function(d, i){return radius/config.levels*d;})
+        .style("fill", "#CDCDCD")
+        .style("stroke", "#CDCDCD")
+        .style("fill-opacity", 0.1);
+
+      // Add the values on the axis
+      /* for(var j=0; j<config.levels; j++){
+          var levelFactor = radius*((j+1)/config.levels);
+          axisGrid.selectAll(".levels")
+              .data(allAxis)
+              .enter()
+              .append("svg:text")
+              .attr("x", function(d, i){return levelFactor*(1-Math.sin(i*angleSlice));})
+              .attr("y", function(d, i){return levelFactor*(1-Math.cos(i*angleSlice));})
+              .attr("class", "legend")
+              .style("font-family", "sans-serif")
+              .style("font-size", "10px")
+              .attr("fill", "#737373")
+              .text(((j+1)/config.levels)*maxValue);
+      } */
+
+      // Draw the axes
+      var axis = axisGrid.selectAll(".axis")
+        .data(allAxis)
+        .enter()
+        .append("g")
+        .attr("class", "axis");
+    
+      // Append the lines
+      axis.append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", function(d, i){ return radius * Math.cos(angleSlice*i - Math.PI/2); })
+        .attr("y2", function(d, i){ return radius * Math.sin(angleSlice*i - Math.PI/2); })
+        .attr("class", "line")
+        .style("stroke", "grey")
+        .style("stroke-width", "1px");
+    
+      // Append the labels
+      axis.append("text")
+        .attr("class", "legend")
+        .text(function(d){return d})
+        .style("font-size", "11px")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.35em")
+        .attr("x", function(d, i){ return radius * Math.cos(angleSlice*i - Math.PI/2); })
+        .attr("y", function(d, i){ return radius * Math.sin(angleSlice*i - Math.PI/2); });
+    
+      // Create a path function
+      var radarLine = d3.lineRadial()
+        .curve(d3.curveLinearClosed)
+        .radius(function(d) { return radius * d.value/config.maxValue; })
+        .angle(function(d,i) {  return i*angleSlice; });
+
+      // Create a path function
+      var radarLine2 = d3.lineRadial()
+        .curve(d3.curveLinearClosed)
+        .radius(function(d) { return radius * d.value/config.maxValue; })
+        .angle(function(d,i) {  return i*angleSlice; });
+    }
+    else {
+      // Draw the background circles
+      axisGrid.selectAll(".levels")
+        .data(d3.range(1, (config.levels+1)).reverse())
+        .enter()
+        .append("circle")
+        .attr("class", "gridCircle")
+        .attr("r", function(d, i){return radius2/config.levels*d;})
+        .style("fill", "#CDCDCD")
+        .style("stroke", "#CDCDCD")
+        .style("fill-opacity", 0.1);
+
+      // Add the values on the axis
+      /* for(var j=0; j<config.levels; j++){
+          var levelFactor = radius2*((j+1)/config.levels);
+          axisGrid.selectAll(".levels")
+              .data(allAxis2)
+              .enter()
+              .append("svg:text")
+              .attr("x", function(d, i){return levelFactor*(1-Math.sin(i*angleSlice2));})
+              .attr("y", function(d, i){return levelFactor*(1-Math.cos(i*angleSlice2));})
+              .attr("class", "legend")
+              .style("font-family", "sans-serif")
+              .style("font-size", "10px")
+              .attr("fill", "#737373")
+              .text(((j+1)/config.levels)*maxValue2);
+      } */
+
+      // Draw the axes
+      var axis = axisGrid.selectAll(".axis")
+        .data(allAxis2)
+        .enter()
+        .append("g")
+        .attr("class", "axis");
+    
+      // Append the lines
+      axis.append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", function(d, i){ return radius2 * Math.cos(angleSlice2*i - Math.PI/2); })
+        .attr("y2", function(d, i){ return radius2 * Math.sin(angleSlice2*i - Math.PI/2); })
+        .attr("class", "line")
+        .style("stroke", "grey")
+        .style("stroke-width", "1px");
+    
+      // Append the labels
+      axis.append("text")
+        .attr("class", "legend")
+        .text(function(d){return d})
+        .style("font-size", "11px")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.35em")
+        .attr("x", function(d, i){ return radius2 * Math.cos(angleSlice2*i - Math.PI/2); })
+        .attr("y", function(d, i){ return radius2 * Math.sin(angleSlice2*i - Math.PI/2); });
+    
+      // Create a path function
+      var radarLine = d3.lineRadial()
+        .curve(d3.curveLinearClosed)
+        .radius(function(d) { return radius2 * d.value/config.maxValue; })
+        .angle(function(d,i) {  return i*angleSlice2; });
+
+      // Create a path function
+      var radarLine2 = d3.lineRadial()
+        .curve(d3.curveLinearClosed)
+        .radius(function(d) { return radius2 * d.value/config.maxValue; })
+        .angle(function(d,i) {  return i*angleSlice2; });
+    }
   
     // Create a wrapper for the radar areas
     var radarWrapper = svg.append("g").attr("class", "radarWrapper");
   
     // Append the backgrounds
-    radarWrapper.append("path")
-      .datum(data)
-      .attr("class", "radarArea")
-      .attr("d", radarLine)
-      .style("fill", "#1a1a1a")
-      .style("fill-opacity", 0.1)
-      .style("stroke-width", "2px")
-      .style("stroke", "#1a1a1a")
-      .style("stroke-opacity", 0.7);
-  }
+    if (data.length > 0) {
+      radarWrapper.append("path")
+        .datum(data)
+        .attr("class", "radarArea")
+        .attr("d", radarLine)
+        .style("fill", "blue")
+        .style("fill-opacity", 0.1)
+        .style("stroke-width", "2px")
+        .style("stroke", "blue")
+        .style("stroke-opacity", 0.7);
+    }
+
+    // Append the backgrounds
+    if (data2.length > 0) {
+      radarWrapper.append("path")
+        .datum(data2)
+        .attr("class", "radarArea")
+        .attr("d", radarLine2)
+        .style("fill", "red")
+        .style("fill-opacity", 0.1)
+        .style("stroke-width", "2px")
+        .style("stroke", "red")
+        .style("stroke-opacity", 0.7);
+    }
+  } 
   
   // Get the select element and the table body
   var select = document.getElementById('feature-select');
@@ -172,7 +339,7 @@
             });
 
             // Update the chart, the table, and the dropdown options
-            drawSpiderChart("#chart", data, config);
+            drawSpiderChart("#chart", data, data2, config);
             updateTableAndOptions();
         });
         cell.appendChild(button);
@@ -216,7 +383,7 @@
         featureDiv.remove();
 
         // Update the chart and the dropdown options
-        drawSpiderChart("#chart", data, config);
+        drawSpiderChart("#chart", data, data2, config);
         updateTableAndOptions();
     });
 
@@ -224,29 +391,30 @@
     document.getElementById('features-container').appendChild(featureDiv);
 
     // Update the chart, the table, and the dropdown options
-    drawSpiderChart("#chart", data, config);
+    drawSpiderChart("#chart", data, data2, config);
     updateTableAndOptions();
   });
 
   // Get the player boxes
   var playerBoxes = document.getElementsByClassName('player-box');
-
+  
   // Add a click event listener to each player box
-  for (var i = 0; i < playerBoxes.length; i++) {
-    playerBoxes[i].addEventListener('click', function() {
+  for (var k = 0; k < playerBoxes.length; k++) {
+    playerBoxes[k].addEventListener('click', function() {
         // Toggle the selected class
         this.classList.toggle('selected');
 
         // Update the chart
         updateChart();
     });
-  }
+  } 
 
   // Function to update the chart based on the selected players
   function updateChart() {
     // Get the selected players
     var selectedPlayers = [];
-    for (var i = 0; i < playerBoxes.length; i++) {
+    console.log('boxes:', playerBoxes);
+    for (var i = 0; i < playerBoxes.length /2; i++) {
         if (playerBoxes[i].classList.contains('selected')) {
             selectedPlayers.push(i);
         }
@@ -256,29 +424,63 @@
     var aggregatedData = data.map(function(d) {
         var value = selectedPlayers.reduce(function(sum, i) {
             return sum + d.value[i];
-        }, 0) / selectedPlayers.length;
+        }, 0);
         return {axis: d.axis, value: value};
     });
 
+    // Get the selected players
+    var selectedPlayers2 = [];
+    for (var i = 12; i < playerBoxes.length; i++) {
+        if (playerBoxes[i].classList.contains('selected')) {
+            selectedPlayers2.push(i-12);
+        }
+    }
+
+    // Calculate the aggregated data for the selected players 2
+    var aggregatedData2 = data2.map(function(d) {
+      var value = selectedPlayers2.reduce(function(sum, i) {
+          return sum + d.value[i];
+      }, 0);
+      return {axis: d.axis, value: value};
+  });
+
     // Find the maximum value across all features
     var maxValue = Math.max(...aggregatedData.map(function(d) { return d.value; }));
+    var maxValue2 = Math.max(...aggregatedData2.map(function(d) { return d.value; }));
+    var finalMaxValue = Math.max(maxValue, maxValue2);
 
     // Normalize the aggregated data
     aggregatedData.forEach(function(d) {
-      d.value = d.value / maxValue;
+      d.value = d.value / finalMaxValue;
+    });
+
+    // Normalize the aggregated data
+    aggregatedData2.forEach(function(d) {
+      d.value = d.value / finalMaxValue;
     });
 
     // Update the chart with the aggregated data
-    drawSpiderChart("#chart", aggregatedData, config);
+    drawSpiderChart("#chart", aggregatedData, aggregatedData2, config);
 
     // Get the data display div
-  var dataDisplay = document.getElementById('data-display');
+  /* var dataDisplay = document.getElementById('data-display');
 
-  // Convert the data to a string
-  var dataString = JSON.stringify(data, null, 2);
+  if (data.length > 0) {
+    // Convert the data to a string
+    var dataString = JSON.stringify(data, null, 2);
 
-  // Set the innerHTML of the data display div
-  dataDisplay.innerHTML = '<pre>' + dataString + '</pre>';
+    // Set the innerHTML of the data display div
+    // dataDisplay.innerHTML = '<pre>' + dataString + '</pre>';
+  }
+
+  if (data2.length > 0) {
+    // Convert the data to a string
+    var dataString2 = JSON.stringify(data2, null, 2);
+
+    // Set the innerHTML of the data display div
+    // dataDisplay.innerHTML = '<pre>' + dataString2 + '</pre>';
+  } */
+
   }
 
   // Draw the chart initially with all players
@@ -286,6 +488,3 @@
     updateChart();
     updateTableAndOptions();
   }
-
-
-  
