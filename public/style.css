@@ -133,6 +133,6 @@ body .tooltip{
     width: 30%;
 }
 
-.player_list{
-    list-style: none;
+.player-news{
+    color: red;
 }

@@ -46,6 +46,7 @@ var player_photo = document.querySelector('.player_photo');
 var player_list = document.querySelector('.player_list');
 var player_club = document.querySelector('.player-club');
 var player_addn_info = document.querySelector('.player-club-pos');
+var player_news = document.querySelector('.player-news');
 
 // Tooltip
 var tooltip = d3.select("body")
@@ -78,21 +79,24 @@ var mouseleave = d => {
     .style("opacity", 0)};
 
 var mouse_single_click = d => {
-    console.log("clicked")
+    // console.log("clicked")
     player_name.innerHTML = d.target.__data__.name;
     player_photo.src = `https://resources.premierleague.com/premierleague/photos/players/250x250/${d.target.__data__.picture_id}.png`
     var ck_order = d.target.__data__.corners_and_indirect_freekicks_order
-    ? d.target.__data__.corners_and_indirect_freekicks_order : "NA"
+    ? d.target.__data__.corners_and_indirect_freekicks_order : "NA";
     var fk_order = d.target.__data__.direct_freekicks_order
-    ? d.target.__data__.direct_freekicks_order : "NA"
+    ? d.target.__data__.direct_freekicks_order : "NA";
     var pk_order = d.target.__data__.penalties_order
-    ? d.target.__data__.penalties_order : "NA"
+    ? d.target.__data__.penalties_order : "NA";
+    var news = d.target.__data__.news?`<i class="fa fa-warning"></i> ${d.target.__data__.news} <i class="fa fa-warning"></i>`:"";
+    // console.log(news);
     player_club.innerHTML = `${d.target.__data__.position} <br> ${d.target.__data__.team}`
     player_addn_info.innerHTML = `Selected by ${d.target.__data__.selected_by_percent}% players <br>
     Penalties Order: ${pk_order} <br>
     Freekicks Order: ${pk_order} <br>
     Corner Order: ${fk_order} <br> 
     `;
+    player_news.innerHTML = news;
 }
 
 
@@ -334,7 +338,8 @@ const updatePlot = (data) => {
     // for hover
     .on("mouseover", mouseover )
     .on("mousemove", mouseover )
-    .on("mouseleave", mouseleave );
+    .on("mouseleave", mouseleave )
+    .on("click", mouse_single_click );
     
     circles.exit().remove()
 };
