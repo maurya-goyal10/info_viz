@@ -72,11 +72,12 @@
     <script>
         // Configuration
         var config = {
-            w: 400,
-            h: 300,
+            w: 500,
+            h: 400,
             maxValue: 1,
             levels: 5,
-            ExtraWidthX: 100
+            ExtraWidthX: 0,
+            ExtraHeightY: 0
         };
 
         var data = [];
@@ -112,6 +113,7 @@
                 // Clear the player list
                 playerList.innerHTML = '';
 
+                if (csvData.length != matchingPlayers.length) {
                 // Add the unique player names to the player list
                 uniquePlayerNames.forEach(function(playerName) {
                     var playerItem = document.createElement('div');
@@ -236,7 +238,7 @@
 
                     playerItem.appendChild(selectButton);
                     playerList.appendChild(playerItem);
-                });
+                });}
             });
 
             playerSearch2.addEventListener('input', function() {
@@ -253,6 +255,7 @@
                 // Clear the player list
                 playerList2.innerHTML = '';
 
+                if (csvData.length != matchingPlayers.length) {
                 // Add the unique player names to the player list
                 uniquePlayerNames.forEach(function(playerName) {
                     var playerItem = document.createElement('div');
@@ -376,7 +379,7 @@
 
                     playerItem.appendChild(selectButton);
                     playerList2.appendChild(playerItem);
-                });
+                });}
             });
         }).catch(function(error) {
             console.log(error);

@@ -124,22 +124,22 @@
 
     var allAxis = data.map(function(i, j){return i.axis}),
         total = allAxis.length,
-        radius = Math.min(config.w/2, config.h/2),
+        radius = Math.min(config.w/3, config.h/3),
         Format = d3.format('%'),
         angleSlice = Math.PI * 2 / total;
 
     var allAxis2 = data2.map(function(i, j){return i.axis}),
         total2 = allAxis2.length,
-        radius2 = Math.min(config.w/2, config.h/2),
+        radius2 = Math.min(config.w/3, config.h/3),
         Format2 = d3.format('%'),
         angleSlice2 = Math.PI * 2 / total2;
   
     // Create the spider chart SVG
     var svg = d3.select(id).append("svg")
       .attr("width",  config.w + config.ExtraWidthX)
-      .attr("height", config.h)
+      .attr("height", config.h + config.ExtraHeightY)
       .append("g")
-      .attr("transform", "translate(" + config.w/2 + "," + config.h/2 + ")");
+      .attr("transform", "translate(" + (200) + "," + (200) + ")");
   
     // Create a wrapper for the grid & axes
     var axisGrid = svg.append("g").attr("class", "axisWrapper");

@@ -179,7 +179,7 @@ body .tooltip{
 
 #player-grid2 {
     position: absolute;
-    left: 1150px;
+    left: 1190px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     padding: 10px;
@@ -187,9 +187,21 @@ body .tooltip{
 
 #chart {
     position: absolute;
+    top: 53%;
+    left: 53%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+}
+
+#spider-chart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center; /* Add this line */
+    position: absolute;
     top: 60%;
     left: 58%;
-    transform: translate(-50%, -50%);
 }
 
 /* Gameweeks grid */
@@ -215,14 +227,6 @@ body .tooltip{
 /* Gameweek box when selected - change color*/
 .player-box.selected {
     background-color: hsl(132, 95%, 36%);
-}
-
-#spider-chart {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center; /* Add this line */
 }
 
 /* Container for the features table */
@@ -299,11 +303,11 @@ body .tooltip{
 #select-all-button-2 {
     position: absolute;
     top: 500px;
-    left: 1175px;
+    left: 1215px;
 }
 
 #unselect-all-button-2 {
     position: absolute;
     top: 500px;
-    left: 1335px;
+    left: 1375px;
 }
