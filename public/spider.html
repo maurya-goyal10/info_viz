@@ -83,10 +83,12 @@
         var data = [];
         var filteredData = [];
         var gw1 = [];
+        var player1 = "";
 
         var data2 = [];
         var filteredData2 = [];
         var gw2 = [];
+        var player2 = "";
 
         // Load the CSV file
         d3.csv("../data/individual_gw.csv").then(function(csvData) {
@@ -123,7 +125,7 @@
                     selectButton.textContent = 'Select';
                     selectButton.addEventListener('click', function() {
                         // When the select button is clicked, draw the spider chart for that player
-
+                        player1 = playerName;
                         // Filter the data to only include the rows for the selected player
                         filteredData = csvData.filter(function(row) {
                             return row['name'] === playerName;
@@ -159,7 +161,7 @@
                                 home = "(A)";
                             };
 
-                            var opponent = "BB";
+                            var opponent = "Error";
 
                             if (opponentObject.value[i] == 1) {
                                 opponent = "ARS";
@@ -226,7 +228,7 @@
                         }
 
                         // Call the drawSpiderChart function with the mapped data
-                        drawSpiderChart("#chart", data, data2, config);
+                        drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
                         // Add this inside the selectButton click event listener, after the drawSpiderChart function call
                         var selectedPlayer = document.getElementById('selected-player');
                         selectedPlayer.textContent = 'Selected player: ' + playerName;
@@ -265,6 +267,7 @@
                     selectButton.textContent = 'Select';
                     selectButton.addEventListener('click', function() {
                         // When the select button is clicked, draw the spider chart for that player
+                        player2 = playerName;
 
                         // Filter the data to only include the rows for the selected player
                         var filteredData2 = csvData.filter(function(row) {
@@ -301,7 +304,7 @@
                                 home = "(A)";
                             };
 
-                            var opponent = "BB";
+                            var opponent = "Error";
 
                             if (opponentObject.value[i] == 1) {
                                 opponent = "ARS";
@@ -368,7 +371,7 @@
                         }
 
                         // Call the drawSpiderChart function with the mapped data
-                        drawSpiderChart("#chart", data, data2, config);
+                        drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
 
                         selectedPlayer2.textContent = 'Selected player: ' + playerName;
 

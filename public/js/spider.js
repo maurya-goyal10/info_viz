@@ -1,119 +1,6 @@
 
   // Create a function to draw the spider chart
-  /* function drawSpiderChart(id, data, data2, config) {
-
-    d3.select(id).select("svg").remove();
-  
-    var allAxis = data.map(function(i, j){return i.axis}),
-        total = allAxis.length,
-        radius = Math.min(config.w/2, config.h/2),
-        Format = d3.format('%'),
-        angleSlice = Math.PI * 2 / total;
-  
-    // Create the spider chart SVG
-    var svg = d3.select(id).append("svg")
-      .attr("width",  config.w + config.ExtraWidthX)
-      .attr("height", config.h)
-      .append("g")
-      .attr("transform", "translate(" + config.w/2 + "," + config.h/2 + ")");
-  
-    // Create a wrapper for the grid & axes
-    var axisGrid = svg.append("g").attr("class", "axisWrapper");
-  
-    // Calculate maxValue
-    var maxValue = Math.max(...data.map(function(d) { return d.value; }), ...data2.map(function(d) { return d.value; }));
-  
-    // Draw the background circles
-    axisGrid.selectAll(".levels")
-      .data(d3.range(1, (config.levels+1)).reverse())
-      .enter()
-      .append("circle")
-      .attr("class", "gridCircle")
-      .attr("r", function(d, i){return radius/config.levels*d;})
-      .style("fill", "#CDCDCD")
-      .style("stroke", "#CDCDCD")
-      .style("fill-opacity", 0.1);
-  
-    // Add the values on the axis
-  
-    // Draw the polygons for data
-    // drawPolygon(data, "blue"); // Replace "blue" with the color you want for data
-    var polygon = svg.selectAll(".radarArea")
-          .data(data)
-          .enter()
-          .append("polygon")
-          .attr("class", "radarArea")
-          .attr("points", function(d) {
-              var points = [];
-              for (var i = 0; i < total; i++) {
-                  var x = d[i].value * radius * Math.cos(angleSlice * i - Math.PI / 2);
-                  var y = d[i].value * radius * Math.sin(angleSlice * i - Math.PI / 2);
-                  points.push([x, y]);
-              }
-              return points.join(" ");
-          })
-          .style("fill", "blue")
-          .style("fill-opacity", config.opacityArea)
-          .on('mouseover', function (d, i){
-              // Add interactivity
-          })
-          .on('mouseout', function(){
-              // Add interactivity
-      });
-    // Draw the polygons for data2
-    if (data2.length > 0) {
-      // drawPolygon(data2, "red"); // Replace "red" with the color you want for data2
-      var polygon2 = svg.selectAll(".radarArea")
-          .data(data2)
-          .enter()
-          .append("polygon")
-          .attr("class", "radarArea")
-          .attr("points", function(d) {
-              var points = [];
-              for (var i = 0; i < total; i++) {
-                  var x = d[i].value * radius * Math.cos(angleSlice * i - Math.PI / 2);
-                  var y = d[i].value * radius * Math.sin(angleSlice * i - Math.PI / 2);
-                  points.push([x, y]);
-              }
-              return points.join(" ");
-          })
-          .style("fill", "red")
-          .style("fill-opacity", config.opacityArea)
-          .on('mouseover', function (d, i){
-              // Add interactivity
-          })
-          .on('mouseout', function(){
-              // Add interactivity
-          });
-    }
-  }
-  
-    function drawPolygon(data, color) {
-      var polygon = svg.selectAll(".radarArea")
-          .data(data)
-          .enter()
-          .append("polygon")
-          .attr("class", "radarArea")
-          .attr("points", function(d) {
-              var points = [];
-              for (var i = 0; i < total; i++) {
-                  var x = d[i].value * radius * Math.cos(angleSlice * i - Math.PI / 2);
-                  var y = d[i].value * radius * Math.sin(angleSlice * i - Math.PI / 2);
-                  points.push([x, y]);
-              }
-              return points.join(" ");
-          })
-          .style("fill", color)
-          .style("fill-opacity", config.opacityArea)
-          .on('mouseover', function (d, i){
-              // Add interactivity
-          })
-          .on('mouseout', function(){
-              // Add interactivity
-          });
-    } */
-  
-  function drawSpiderChart(id, data, data2, config) {
+  function drawSpiderChart(id, data, data2, config, maxval=1, name1='', name2='') {
 
     // Print data and data2 to the console
     console.log('data:', data);
@@ -288,6 +175,7 @@
   
     // Append the backgrounds
     if (data.length > 0) {
+      console.log('data:', data);
       radarWrapper.append("path")
         .datum(data)
         .attr("class", "radarArea")
@@ -311,6 +199,62 @@
         .style("stroke", "red")
         .style("stroke-opacity", 0.7);
     }
+
+    // Combine your data arrays
+    // var allData = [data, data2];
+
+    // Draw the spider chart
+    data.forEach(function(d, i) {
+      // Your code to draw the spider chart here...
+      // console.log('dataset:', d.value * Math.cos(angleSlice*i));
+      // Append the circles
+      radarWrapper.append("circle")
+        .attr("class", "radarCircle")
+        .attr("r", 6)
+        .attr("cx", radius*d.value * Math.cos(angleSlice*i- Math.PI/2)) // Use d.value directly
+        .attr("cy", radius*d.value * Math.sin(angleSlice*i- Math.PI/2)) // Use d.value directly
+        .style("fill", "blue")
+        .style("fill-opacity", 0.8)
+        .on("mouseover", function() {
+          // Show tooltip
+          tooltip.transition().duration(200).style("opacity", 1);
+          tooltip.html(`${player1}\nValue: ${d.value*maxval}`)
+            .style("left", (d3.event.pageX + 10) + "px")
+            .style("top", (d3.event.pageY - 15) + "px");
+        })
+        .on("mouseout", function() {
+          // Hide tooltip
+          tooltip.transition().duration(200).style("opacity", 0);
+    }); });
+
+    data2.forEach(function(d, i) {
+      // Your code to draw the spider chart here...
+      // console.log('dataset:', d.value * Math.cos(angleSlice*i));
+      // Append the circles
+      radarWrapper.append("circle")
+        .attr("class", "radarCircle")
+        .attr("r", 6)
+        .attr("cx", radius*d.value * Math.cos(angleSlice*i- Math.PI/2)) // Use d.value directly
+        .attr("cy", radius*d.value * Math.sin(angleSlice*i- Math.PI/2)) // Use d.value directly
+        .style("fill", "red")
+        .style("fill-opacity", 0.8)
+        .on("mouseover", function() {
+          // Show tooltip
+          tooltip.transition().duration(200).style("opacity", 1);
+          tooltip.html(`${player2}\nValue: ${d.value*maxval}`)
+            .style("left", (d3.event.pageX + 10) + "px")
+            .style("top", (d3.event.pageY - 15) + "px");
+        })
+        .on("mouseout", function() {
+          // Hide tooltip
+          tooltip.transition().duration(200).style("opacity", 0);
+    }); });
+
+    // Create a tooltip
+    var tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
   } 
   
   /*
@@ -439,7 +383,7 @@ function updateListAndOptions() {
           });
 
           // Update the chart, the list, and the dropdown options
-          drawSpiderChart("#chart", data, data2, config);
+          drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
           updateListAndOptions();
       });
       listItem.appendChild(button);
@@ -494,7 +438,7 @@ select.addEventListener('change', function() {
       featureDiv.remove();
 
       // Update the chart and the dropdown options
-      drawSpiderChart("#chart", data, data2, config);
+      drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
       updateListAndOptions();
   });
 
@@ -502,7 +446,7 @@ select.addEventListener('change', function() {
   document.getElementById('features-container').appendChild(featureDiv);
 
   // Update the chart, the list, and the dropdown options
-  drawSpiderChart("#chart", data, data2, config);
+  drawSpiderChart("#chart", data, data2, config, player1, player2);
   updateListAndOptions();
 });
 
@@ -616,7 +560,7 @@ select.addEventListener('change', function() {
     });
 
     // Update the chart with the aggregated data
-    drawSpiderChart("#chart", aggregatedData, aggregatedData2, config);
+    drawSpiderChart("#chart", aggregatedData, aggregatedData2, config, finalMaxValue, player1, player2);
 
     // Get the data display div
   /* var dataDisplay = document.getElementById('data-display');
