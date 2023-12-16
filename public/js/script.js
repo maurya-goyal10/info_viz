@@ -47,6 +47,10 @@ var player_list = document.querySelector('.player_list');
 var player_club = document.querySelector('.player-club');
 var player_addn_info = document.querySelector('.player-club-pos');
 var player_news = document.querySelector('.player-news');
+var buttons = document.querySelector('.connection-buttons');
+var remove_button = document.querySelector('.remove-button');
+var player_1 = null;
+var player_2 = null;
 
 // Tooltip
 var tooltip = d3.select("body")
@@ -97,8 +101,51 @@ var mouse_single_click = d => {
     Corner Order: ${fk_order} <br> 
     `;
     player_news.innerHTML = news;
+    if (player_1){
+        first_button = `<button class='btn btn-primary first_player disabled'>Already selected</button>`;
+    } else{
+        first_button = `<button class='btn btn-primary first_player'>Add as player-1</button>`;
+    }
+    buttons.innerHTML = `${first_button}
+    <button class='btn btn-primary redirect_to_comparison'>player-2 and redirect</button> <br>
+    <button class='btn btn-danger remove-button'>Remove</button>`;
+    var remove_button = document.querySelector('.remove-button');
+    if (remove_button){
+        remove_button.addEventListener('click', remove_player_details)
+    }
+    var first_player = document.querySelector('.first_player');
+    if (first_player){
+        first_player.addEventListener('click', () => {
+            player_1 = d.target.__data__.name;
+            first_player.textContent = `Already selected`;
+            first_player.disabled = true;
+        })
+    }
+    var redirect_to_comparison = document.querySelector('.redirect_to_comparison');
+    if (redirect_to_comparison){
+        redirect_to_comparison.addEventListener('click', () => {
+            var dataToPass = {
+                p1: `${player_1}`,
+                p2: `${d.target.__data__.name}`
+            };
+
+            var queryString = Object.keys(dataToPass)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
+            .join('&');
+
+            window.location.href = 'spider.html?' + queryString;
+        })
+    }
 }
 
+var remove_player_details = () => {
+    player_name.innerHTML = "";
+    player_photo.src = "";
+    player_addn_info.innerHTML = "";
+    player_club.innerHTML = "";
+    player_news.innerHTML = "";
+    buttons.innerHTML = "";
+}
 
 // Function to set up the initial plot
 const setupPlot = (data) => {
@@ -357,6 +404,3 @@ d3.csv('../data/players.csv')
         });
         setupPlot(data); // Set up initial plot
     });
-
-
-

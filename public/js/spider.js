@@ -1,3 +1,20 @@
+function getQueryParameters() {
+  var queryString = window.location.search.substring(1);
+  var queryParams = {};
+  queryString.split('&').forEach(function (pair) {
+      var parts = pair.split('=');
+      queryParams[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+  });
+  return queryParams;
+}
+
+var queryParams = getQueryParameters()
+
+var p1 = queryParams.p1;
+var p2 = queryParams.p2;
+
+console.log(p1,p2)
+
 var config = {
   w: 500,
   h: 400,
@@ -10,12 +27,12 @@ var config = {
 var data = [];
 var filteredData = [];
 var gw1 = [];
-var player1 = "";
+var player1 = p1? p1:"";
 
 var data2 = [];
 var filteredData2 = [];
 var gw2 = [];
-var player2 = "";
+var player2 = p2? p2:"";
 
 // Load the CSV file
 d3.csv("../data/individual_gw.csv").then(function(csvData) {
