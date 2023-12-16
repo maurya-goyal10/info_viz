@@ -1,20 +1,13 @@
 body, html {
     height: 100%;
     margin: 0;
-    overflow: hidden;
-}
-
-section{
-    min-height:500px;
-    display: flex;
-    flex-direction: column;
+    overflow: auto;
 }
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
-
 
 /* Styling for the dropdown button */
 .dropdown button {
@@ -77,20 +70,11 @@ button {
     flex-direction: column;
 }
 
-.first_heading{
-    text-align: center;
-}
-
-.first_heading h1{
-    text-transform: capitalize;
-}
-
 .half {
     margin: 2%;
     width: 100%;
     height: 100%;
     flex: 1;
-    display: flex;
     /* border: 1px solid #ccc;
     box-sizing: border-box; */
 }
@@ -109,9 +93,8 @@ svg{
 }
 
 circle{
+    fill: steelblue;
     opacity: 0.6;
-    stroke: gray;
-
 }
 
 body .tooltip{
@@ -123,25 +106,6 @@ body .tooltip{
     border-width: 1px;
     border-radius: 5px;
     padding: 10px
-}
-
-.player-info{
-    margin: auto;
-    width: 50%;
-    padding: 10px;
-    text-align: center;
-}
-
-.player_name,.player-club{
-    margin: 0;
-}
-
-.player_photo{
-    width: 30%;
-}
-
-.player-news{
-    color: red;
 }
 
 #container {
@@ -358,7 +322,3 @@ body .tooltip{
     border-radius: 8px;
     pointer-events: none;
   }
-
-div{
-    display: block;
-}

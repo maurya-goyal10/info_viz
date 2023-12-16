@@ -8,50 +8,119 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="first_plot">
-            <div class="first_heading">
-                <h1>All players general performance throughout the season</h1>
-            </div>
-            <div class="dropdown">
-                <button>Filters <i class="fa fa-filter"></i></button>
-                <div class="dropdown-content">
-                    <h2>Filter conditions: </h2>
-                    <form action="index.html" method="post" id="filter_first_plot" onsubmit="return submitForm(event)">
-                        <label for="minutesPlayed">Minutes Played:</label>
-                        <select id="minutesPlayed" name="minutesPlayed" class="filter minutes_filter">
-                        <option value="-1" selected="selected">include all</option>
-                        <option value="0">Greater than 0</option>
-                        <option value="250">Greater than 250</option>
-                        <option value="500">Greater than 500</option>
-                        <option value="900">Greater than 900</option>
-                        </select>
-                    
-                        <label for="position">Position:</label>
-                        <select id="position" name="position" class="filter position_filter" multiple>
-                        <option value="FWD" selected="selected">Forward (FWD)</option>
-                        <option value="MID" selected="selected">Midfielder (MID)</option>
-                        <option value="DEF" selected="selected">Defender (DEF)</option>
-                        <option value="GKP" selected="selected">Goalkeeper (GK)</option>
-                        </select>
-                    </form>
+    <section class="scatter-plot-all-players">
+        <div class="container">
+            <div class="first_plot">
+                <div class="first_heading">
+                    <h1>All players general performance throughout the season</h1>
+                </div>
+                <div class="dropdown">
+                    <button>Filters <i class="fa fa-filter"></i></button>
+                    <div class="dropdown-content">
+                        <h2>Filter conditions: </h2>
+                        <form action="index.html" method="post" id="filter_first_plot" onsubmit="return submitForm(event)">
+                            <label for="minutesPlayed">Minutes Played:</label>
+                            <select id="minutesPlayed" name="minutesPlayed" class="filter minutes_filter">
+                            <option value="-1" selected="selected">include all</option>
+                            <option value="0">Greater than 0</option>
+                            <option value="250">Greater than 250</option>
+                            <option value="500">Greater than 500</option>
+                            <option value="900">Greater than 900</option>
+                            </select>
+                        
+                            <label for="position">Position:</label>
+                            <select id="position" name="position" class="filter position_filter" multiple>
+                            <option value="FWD" selected="selected">Forward (FWD)</option>
+                            <option value="MID" selected="selected">Midfielder (MID)</option>
+                            <option value="DEF" selected="selected">Defender (DEF)</option>
+                            <option value="GKP" selected="selected">Goalkeeper (GK)</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+    
+                <div class="half" id="one">
+                    <svg class="one"> </svg>    
+                    <div class="player-info">
+                        <img class="player_photo" > 
+                        <h3 class="player_name"></h3>
+                        <h5 class="player-club"></h5>
+                        <p class="player-news"></p>
+                        <p class="player-club-pos"></p>
+                    </div>        
                 </div>
             </div>
-
-            <div class="half" id="one">
-                <svg class="one"> </svg>    
-                <div class="player-info">
-                    <img class="player_photo" > 
-                    <h3 class="player_name"></h3>
-                    <h5 class="player-club"></h5>
-                    <p class="player-news"></p>
-                    <p class="player-club-pos"></p>
-                </div>        
+        </div>
+    </section>
+    <section class="spider-chart-comparing-players">
+        <div id="search-container">
+            <input type="text" id="player-search" placeholder="Enter player name">
+            <div id="player-list-container">
+                <div id="player-list"></div>
+            </div>
+            <div id="selected-player"></div>
+        </div>
+        <div id="search-container2">
+            <input type="text" id="player-search2" placeholder="Enter player name">
+            <div id="player-list-container2">
+                <div id="player-list2"></div>
+            </div>
+            <div id="selected-player2"></div>
+        </div>
+        <div id="main-container">
+            <button id="select-all-button-1">Select All GWs</button>
+            <button id="unselect-all-button-1">Clear GWs</button>
+            <div id="player-grid">
+                <div id="gameweek01" class="player-box">GW1</div>
+                <div id="gameweek02" class="player-box">GW2</div>
+                <div id="gameweek03" class="player-box">GW3</div>
+                <div id="gameweek04" class="player-box">GW4</div>
+                <div id="gameweek05" class="player-box">GW5</div>
+                <div id="gameweek06" class="player-box">GW6</div>
+                <div id="gameweek07" class="player-box">GW7</div>
+                <div id="gameweek08" class="player-box">GW8</div>
+                <div id="gameweek09" class="player-box">GW9</div>
+                <div id="gameweek10" class="player-box">GW10</div>
+                <div id="gameweek11" class="player-box">GW11</div>
+                <div id="gameweek12" class="player-box">GW12</div>
+            </div>
+            <button id="select-all-button-2">Select All GWs</button>
+            <button id="unselect-all-button-2">Clear GWs</button>
+            <div id="player-grid2">
+                <div id="gameweek13" class="player-box">GW1</div>
+                <div id="gameweek14" class="player-box">GW2</div>
+                <div id="gameweek15" class="player-box">GW3</div>
+                <div id="gameweek16" class="player-box">GW4</div>
+                <div id="gameweek17" class="player-box">GW5</div>
+                <div id="gameweek18" class="player-box">GW6</div>
+                <div id="gameweek19" class="player-box">GW7</div>
+                <div id="gameweek20" class="player-box">GW8</div>
+                <div id="gameweek21" class="player-box">GW9</div>
+                <div id="gameweek22" class="player-box">GW10</div>
+                <div id="gameweek23" class="player-box">GW11</div>
+                <div id="gameweek24" class="player-box">GW12</div>
             </div>
         </div>
-    </div>
+        <div id="chart"></div>
+        <select id="feature-select">
+            <option value="assists">Assists</option>
+            <option value="goals_scored">Goals Scored</option>
+            <option value="expected_assists">Expected Assists</option>
+            <option value="expected_goals">Expected Goals</option>
+            <option value="bonus">Bonus</option>
+        </select>
+        <div id="features-container">
+    
+            <div id="features-list"></div>
+            
+        </div>
+        <link rel="stylesheet" href="style.css">
+        <script src="js/spider.js"></script>
+        <div id="chart"></div>
+    </section>
     <!-- <svg> </svg> -->
     <link rel="stylesheet" href="style.css">
     <script src="js/script.js"></script>
+    <script src="js/spider.js"></script>
 </body>
 </html>
