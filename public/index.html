@@ -5,11 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FPL PLAYER COMPARISON</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        #timeline_plot {
+        width: 80%;
+        height: 400px;
+        border: 1px solid black; /* Optional: Add border for visualization */
+        box-sizing: border-box; /* Include padding and border in the width */
+        margin-top: 20px; /* Add margin-top to separate from the above content */
+        margin-left: 10px; 
+        margin-bottom: 10px;
+        clear: both; /* Ensure no floating elements are beside or above */
+        }
+
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .checkbox-container {
+            display: inline-block;
+            vertical-align: top;
+            width: 45%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            float: left;
+            margin-right: 15px; /* Add margin to create space between containers */
+        }
+        
+        
+        .feature-container {
+            display: inline-block;
+            height: 150px; /* Set a fixed height for the feature container */
+            overflow-y: auto;
+            vertical-align: top;
+            width: 25%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box; /* Include padding and border in the width */
+            float: left; /* Float the container to the left */
+        }
+
+        .selectedFeature {
+            display: block;
+            margin-bottom: 5px; /* Adjust spacing between buttons */
+            max-width: 90%; /* Limit the maximum width of buttons */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Add ellipsis for text overflow */
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        #featureDropdown {
+            width: 100%; /* Set the width to fill the container */
+            box-sizing: border-box; /* Include padding and border in the width */
+        }
+        /* Other existing CSS styles */
+
+      
+      </style>
+      
 </head>
 <body>
     <h1>SCATTER PLOT</h1>
-    <svg> </svg>
-    <link rel="stylesheet" href="style.css">
+    <div class="checkbox-container">
+        <p>Gameweek checkbox:</p>
+        <!-- Adding 12 checkboxes -->
+        <label for="checkbox1">1</label>
+        <input type="checkbox" id="checkbox1">
+        
+        <label for="checkbox2">2</label>
+        <input type="checkbox" id="checkbox2">
+        
+        <label for="checkbox3">3</label>
+        <input type="checkbox" id="checkbox3">
+        
+        <label for="checkbox4">4</label>
+        <input type="checkbox" id="checkbox4">
+        
+        <label for="checkbox5">5</label>
+        <input type="checkbox" id="checkbox5">
+        
+        <label for="checkbox6">6</label>
+        <input type="checkbox" id="checkbox6">
+        
+        <label for="checkbox7">7</label>
+        <input type="checkbox" id="checkbox7">
+        
+        <label for="checkbox8">8</label>
+        <input type="checkbox" id="checkbox8">
+        
+        <label for="checkbox9">9</label>
+        <input type="checkbox" id="checkbox9">
+        
+        <label for="checkbox10">10</label>
+        <input type="checkbox" id="checkbox10">
+        
+        <label for="checkbox11">11</label>
+        <input type="checkbox" id="checkbox11">
+        
+        <label for="checkbox12">12</label>
+        <input type="checkbox" id="checkbox12">
+    </div>
+
+    <div class="feature-container">
+        <section>
+            <div id="selectedFeatures">
+                <!-- Selected features will be displayed here as buttons -->
+            </div>
+            <p>Feature selection:</p>
+            <select id="featureDropdown">
+                <!-- Dropdown options will be populated dynamically -->
+            </select>
+            <p id="maxFeaturesMessage" style="color: red; display: none;">Maximum of 3 features allowed!</p>
+        </section>
+    </div>
+    <svg id="timeline_plot"></svg>
     <script src="js/script.js"></script>
 </body>
 </html>
