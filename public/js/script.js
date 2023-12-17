@@ -50,7 +50,7 @@ var player_news = document.querySelector('.player-news');
 var buttons = document.querySelector('.connection-buttons');
 var remove_button = document.querySelector('.remove-button');
 var player_1 = null;
-var player_2 = null;
+var player_1_trend = null;
 
 // Tooltip
 var tooltip = d3.select("body")
@@ -102,13 +102,20 @@ var mouse_single_click = d => {
     `;
     player_news.innerHTML = news;
     if (player_1){
-        first_button = `<button class='btn btn-primary first_player disabled'>Already selected</button>`;
+        first_button = `<button class='btn btn-info first_player disabled'>Already selected</button>`;
     } else{
-        first_button = `<button class='btn btn-primary first_player'>Add as player-1</button>`;
+        first_button = `<button class='btn btn-info first_player'><i class="fa fa-plus"> </i> Player-1</button>`;
     }
-    buttons.innerHTML = `${first_button}
-    <button class='btn btn-primary redirect_to_comparison'>player-2 and redirect</button> <br>
-    <button class='btn btn-danger remove-button'>Remove</button>`;
+    if (player_1_trend){
+        first_button_trend = `<button class='btn btn-warning first_player_trend disabled'>Already selected</button>`;
+    } else{
+        first_button_trend = `<button class='btn btn-warning first_player_trend'><i class="fa fa-plus"> </i> Player-1</button>`;
+    }
+    buttons.innerHTML = `Player Aggregate Comparison: <br> ${first_button}
+    <button class='btn btn-info redirect_to_comparison'><i class="fa fa-plus"> </i> player-2(redirect)</button> <br>
+    Player Trend Comparison: <br> ${first_button_trend}
+    <button class='btn btn-warning redirect_to_trend'><i class="fa fa-plus"> </i> player-2(redirect)</button> <br> <br>
+    <button class='btn btn-danger remove-button'> <i class="fa fa-minus"> </i> Remove</button>`;
     var remove_button = document.querySelector('.remove-button');
     if (remove_button){
         remove_button.addEventListener('click', remove_player_details)
@@ -128,12 +135,35 @@ var mouse_single_click = d => {
                 p1: `${player_1}`,
                 p2: `${d.target.__data__.name}`
             };
+            
+            var queryString = Object.keys(dataToPass)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
+            .join('&');
+            
+            window.location.href = 'spider.html?' + queryString;
+        })
+    }
+    var first_player_trend = document.querySelector('.first_player_trend');
+    if (first_player_trend){
+        first_player_trend.addEventListener('click', () => {
+            player_1_trend = d.target.__data__.name;
+            first_player_trend.textContent = `Already selected`;
+            first_player_trend.disabled = true;
+        })
+    }
+    var redirect_to_trend = document.querySelector('.redirect_to_trend');
+    if (redirect_to_trend){
+        redirect_to_trend.addEventListener('click', () => {
+            var dataToPass = {
+                p1: `${player_1_trend}`,
+                p2: `${d.target.__data__.name}`
+            };
 
             var queryString = Object.keys(dataToPass)
             .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
             .join('&');
 
-            window.location.href = 'spider.html?' + queryString;
+            window.location.href = 'timeline.html?' + queryString;
         })
     }
 }
