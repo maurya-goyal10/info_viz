@@ -32,8 +32,8 @@
         border: 1px solid black; /* Optional: Add border for visualization */
         box-sizing: border-box; /* Include padding and border in the width */
         margin-top: 20px; /* Add margin-top to separate from the above content */
-        margin-left: 10px; 
-        margin-bottom: 10px;
+        margin-left: 70px; 
+        margin-bottom: 40px;
         clear: both; /* Ensure no floating elements are beside or above */
         }
 
@@ -56,7 +56,7 @@
         
         .feature-container {
             display: inline-block;
-            height: 150px; /* Set a fixed height for the feature container */
+            height: 120px; /* Set a fixed height for the feature container */
             overflow-y: auto;
             vertical-align: top;
             width: 25%;
@@ -79,6 +79,12 @@
             width: 100%; /* Set the width to fill the container */
             box-sizing: border-box; /* Include padding and border in the width */
         }
+
+        .player-container {
+            flex: 0 0 calc(25% - 10px);
+            max-width: 300px; /* Optional: Set a maximum width for the items */
+        }
+
         /* Other existing CSS styles */
       </style>
       
@@ -148,6 +154,8 @@
             </select>
             <p id="maxFeaturesMessage" style="color: red; display: none;">Maximum of 3 features allowed!</p>
         </section>
+    </div>
+    <div id="player-container">
     </div>
     <svg id="timeline_plot"></svg>
     <script src="js/script_timeline.js"></script>

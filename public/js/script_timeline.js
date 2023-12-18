@@ -34,6 +34,7 @@ let gameweek_list = [1, 2, 3, 4, 5,6,7, 8, 9, 10, 11, 12];
 // Make g1 a global variable
 let g1; 
 let data;
+let playerContainer;
 
 
 // Select all checkboxes and initially check them
@@ -56,6 +57,7 @@ function showTooltip(d, player, mouseX, mouseY, scaleFunctions) {
     const widths = getTextWidth(texts, font);
     const maxWidth = Math.max(...Object.values(widths));
 
+
     if (maxWidth > tooltipWidth) {
         tooltipWidth = maxWidth + 20; // Add some padding or offset
     }
@@ -68,8 +70,11 @@ function showTooltip(d, player, mouseX, mouseY, scaleFunctions) {
         tooltipY = mouseY + tooltipYOffset;
     }
 
+
+
     const tooltip = g1.append('g')
-        .attr('class', 'tooltip');
+        .attr('class', 'tooltip')
+        .style('opacity', 1);
 
     tooltip.append('rect')
         .attr('x', tooltipX)
@@ -196,7 +201,11 @@ const setup_timeline_Plot = (csvData) => {
         .domain(selected_features)
         .range(['#e41a1c', '#377eb8', '#4daf4a']);
 
-    g1 = svg1.append('g').attr('transform', `translate(${timeline_margin.left},${timeline_margin.top})`);
+    g1 = svg1.append('g')
+            .attr('transform', `translate(${timeline_margin.left},${timeline_margin.top})`)
+            .style('overflow', 'scroll');
+    
+
 
     const xScale = d3.scaleBand()
         .domain(gameweek_list)
@@ -285,55 +294,51 @@ const setup_timeline_Plot = (csvData) => {
     
     
     // Dropdown to choose players
+
+    playerContainer = document.getElementById('player-container');
+
   
-    const playerDropdown1 = g1.append('foreignObject')
-        .attr('x', 10)
-        .attr('y', 10)
-        .attr('width', 120)
-        .attr('height', 30)
-        .append('xhtml:select')
-        .attr('id', 'playerDropdown1');
+    const playerDropdown1 = document.createElement('select');
+    playerDropdown1.id = 'playerDropdown1';
+    playerDropdown1.style.padding = '5px';
+    playerDropdown1.style.marginLeft = '15px';
+    playerDropdown1.style.marginBottom = '10px';
+    playerContainer.appendChild(playerDropdown1);
 
-    const playerDropdown2 = g1.append('foreignObject')
-        .attr('x', 10)
-        .attr('y', 50)
-        .attr('width', 120)
-        .attr('height', 30)
-        .append('xhtml:select')
-        .attr('id', 'playerDropdown2');
+    const playerDropdown2 = document.createElement('select');
+    playerDropdown2.id = 'playerDropdown2';
+    playerDropdown2.style.padding = '5px';
+    playerDropdown2.style.marginLeft = '15px';
+    playerContainer.appendChild(playerDropdown2);
 
-// Extract unique player names from the data
+    // Extract unique player names from the data
     const playerNames = Array.from(new Set(data.map(d => d.name)));
 
-    playerDropdown1
-        .selectAll('option')
-        .data(playerNames)
-        .enter()
-        .append('option')
-        .attr('value', d => d)
-        .text(d => d)
-        .property('selected', d=> d === player_list[0]);
 
-    playerDropdown2
-        .selectAll('option')
-        .data(playerNames)
-        .enter()
-        .append('option')
-        .attr('value', d => d)
-        .text(d => d)
-        .property('selected', d=> d === player_list[1]);
-
-    playerDropdown1.on('change', () => {
-            player_list[0] = playerDropdown1.property('value');
-            update_timeline_Plot(selected_features);
-        });
+    playerDropdown1.addEventListener('change', () => {
+        player_list[0] = playerDropdown1.value;
+        update_timeline_Plot(selected_features);
+    });
     
-    playerDropdown2.on('change', () => {
-            player_list[1] = playerDropdown2.property('value');
-            update_timeline_Plot(selected_features);
-        });
+    playerDropdown2.addEventListener('change', () => {
+        player_list[1] = playerDropdown2.value;
+        update_timeline_Plot(selected_features);
+    });
 
+    playerNames.forEach(player => {
+        const option1 = document.createElement('option');
+        option1.value = player;
+        option1.textContent = player;
+        playerDropdown1.appendChild(option1);
 
+        const option2 = document.createElement('option');
+        option2.value = player;
+        option2.textContent = player;
+        playerDropdown2.appendChild(option2);
+    });
+
+    playerDropdown1.value = player_list[0];
+    playerDropdown2.value = player_list[1];
 
 
 
@@ -395,6 +400,11 @@ const update_timeline_Plot = (selectedFeatures) => {
         
         // Clear the existing plot
         svg1.selectAll('*').remove();
+        if (playerContainer) {
+            playerContainer.innerHTML = ''; // Clear the playerContainer
+        } else {
+            console.error('playerContainer is undefined or not accessible.');
+        }
         
         // Re-setup the plot with the updated data and features
         setup_timeline_Plot(data);
