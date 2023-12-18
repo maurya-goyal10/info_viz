@@ -1,7 +1,7 @@
 body, html {
     height: 100%;
     margin: 0;
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 .dropdown {
@@ -171,6 +171,7 @@ body .tooltip{
 
 #player-grid {
     position: absolute;
+    top: 250px;
     left: 50px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -179,6 +180,7 @@ body .tooltip{
 
 #player-grid2 {
     position: absolute;
+    top: 250px;
     left: 1190px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -219,8 +221,8 @@ body .tooltip{
     cursor: pointer;
     background-color: #f0f0f0;
     text-align: center;
-    width: 50px; /* Add this line */
-    height: 50px; /* Add this line */
+    width: 70px; /* Add this line */
+    height: 70px; /* Add this line */
     line-height: 50px; /* Add this line */
 }
 
@@ -241,7 +243,7 @@ body .tooltip{
     align-items: center;
     gap: 10px;
     position: absolute;
-    top: 10px;
+    top: 70px;
     left: 10px;
 }
 
@@ -267,7 +269,7 @@ body .tooltip{
     align-items: center;
     gap: 10px;
     position: absolute;
-    top: 10px;
+    top: 70px;
     left: 1100px;
 }
 
