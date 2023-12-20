@@ -26,8 +26,8 @@ const timeline_inner_height = timeline_svg_height - timeline_margin.top - timeli
 // Features to plot on the timeline
 let selected_features = ['xP', 'creativity'];
 // Player names for whom the timeline plot is done
-const player1 = p1?p1:'Bernardo Veiga de Carvalho e Silva';
-const player2 = p2?p2:'Erling Haaland';
+const player1 = p1?p1:'Erling Haaland';
+const player2 = p2?p2:'Mohamed Salah';
 
 const player_list = [player1, player2];
 let gameweek_list = [1, 2, 3, 4, 5,6,7, 8, 9, 10, 11, 12];
