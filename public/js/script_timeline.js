@@ -208,7 +208,7 @@ const setup_timeline_Plot = (csvData) => {
 
     const color = d3.scaleOrdinal()
         .domain(selected_features)
-        .range(['#e41a1c', '#377eb8', '#4daf4a']);
+        .range(['#00916e', '#ff6f59', '#e9b872']);
 
     g1 = svg1.append('g')
             .attr('transform', `translate(${timeline_margin.left},${timeline_margin.top})`)
