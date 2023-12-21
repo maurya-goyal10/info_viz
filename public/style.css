@@ -143,3 +143,41 @@ body .tooltip{
 .player-news{
     color: red;
 }
+
+.label {
+    text-align: center;
+}
+
+.dot-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dott {
+    height: 15px;
+    width: 15px;
+    background-color: gray;
+    border-radius: 50%;
+    margin: 0 5px; /* Add margin to separate dots */
+}
+
+.fwd {
+    background-color: #d7191c;
+}
+
+.mid {
+    background-color: #fdae61;
+}
+
+.def {
+    background-color: #abdda4;
+}
+
+.gkp {
+    background-color: #2b83ba;
+}
+
+.txt{
+    color: black;
+}

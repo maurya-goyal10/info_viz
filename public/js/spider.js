@@ -34,6 +34,17 @@ var filteredData2 = [];
 var gw2 = [];
 var player2 = p2? p2:"Mohamed Salah";
 
+var redirect_to_trend = document.querySelector('.trend-thing');
+var dataToPass = {
+    p1: `${player1}`,
+    p2: `${player2}`
+};
+console.log(`${player1},${player2}`)
+var queryString = Object.keys(dataToPass)
+.map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
+.join('&');
+redirect_to_trend.href = 'timeline.html?' + queryString;
+
 // Load the CSV file
 d3.csv("../data/individual_gw.csv").then(function(csvData) {
   var playerSearch = document.getElementById('player-search');
@@ -392,6 +403,16 @@ d3.csv("../data/individual_gw.csv").then(function(csvData) {
                   playerBoxes[i].textContent = opponent + home;
               }
 
+              var dataToPass = {
+                p1: `${player1}`,
+                p2: `${player2}`
+            };
+            console.log(`${player1},${player2}`)
+            var queryString = Object.keys(dataToPass)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
+            .join('&');
+            redirect_to_trend.href = 'timeline.html?' + queryString;
+
               // Call the drawSpiderChart function with the mapped data
               drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
               // Add this inside the selectButton click event listener, after the drawSpiderChart function call
@@ -534,6 +555,16 @@ d3.csv("../data/individual_gw.csv").then(function(csvData) {
 
                   playerBoxes[i+12].textContent = opponent + home;
               }
+
+              var dataToPass = {
+                p1: `${player1}`,
+                p2: `${player2}`
+            };
+            console.log(`${player1},${player2}`)
+            var queryString = Object.keys(dataToPass)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
+            .join('&');
+            redirect_to_trend.href = 'timeline.html?' + queryString;
 
               // Call the drawSpiderChart function with the mapped data
               drawSpiderChart("#chart", data, data2, config, 1, player1, player2);

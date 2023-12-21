@@ -26,11 +26,20 @@ const timeline_inner_height = timeline_svg_height - timeline_margin.top - timeli
 // Features to plot on the timeline
 let selected_features = ['xP', 'creativity'];
 // Player names for whom the timeline plot is done
-const player1 = p1?p1:'Bernardo Veiga de Carvalho e Silva';
-const player2 = p2?p2:'Erling Haaland';
+const player1 = p1?p1:'Erling Haaland';
+const player2 = p2?p2:'Mohamed Salah';
 
 const player_list = [player1, player2];
 let gameweek_list = [1, 2, 3, 4, 5,6,7, 8, 9, 10, 11, 12];
+var redirect_to_spider = document.querySelector('.spider-thing');
+var dataToPass = {
+    p1: `${player_list[0]}`,
+    p2: `${player_list[1]}`
+};
+var queryString = Object.keys(dataToPass)
+    .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
+    .join('&');
+redirect_to_spider.href = 'spider.html?' + queryString;
 // Make g1 a global variable
 let g1; 
 let data;
@@ -199,7 +208,7 @@ const setup_timeline_Plot = (csvData) => {
 
     const color = d3.scaleOrdinal()
         .domain(selected_features)
-        .range(['#e41a1c', '#377eb8', '#4daf4a']);
+        .range(['#00916e', '#ff6f59', '#e9b872']);
 
     g1 = svg1.append('g')
             .attr('transform', `translate(${timeline_margin.left},${timeline_margin.top})`)
@@ -317,11 +326,27 @@ const setup_timeline_Plot = (csvData) => {
 
     playerDropdown1.addEventListener('change', () => {
         player_list[0] = playerDropdown1.value;
+        dataToPass = {
+            p1: `${player_list[0]}`,
+            p2: `${player_list[1]}`
+        };
+        var queryString = Object.keys(dataToPass)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
+            .join('&');
+        redirect_to_spider.href = 'spider.html?' + queryString;
         update_timeline_Plot(selected_features);
     });
     
     playerDropdown2.addEventListener('change', () => {
         player_list[1] = playerDropdown2.value;
+        dataToPass = {
+            p1: `${player_list[0]}`,
+            p2: `${player_list[1]}`
+        };
+        var queryString = Object.keys(dataToPass)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToPass[key]))
+            .join('&');
+        redirect_to_spider.href = 'spider.html?' + queryString;
         update_timeline_Plot(selected_features);
     });
 
