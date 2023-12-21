@@ -603,22 +603,6 @@ function drawSpiderChart(id, data, data2, config, maxval=1, name1='', name2='') 
         .style("stroke", "#CDCDCD")
         .style("fill-opacity", 0.1);
 
-      // Add the values on the axis
-      /* for(var j=0; j<config.levels; j++){
-          var levelFactor = radius*((j+1)/config.levels);
-          axisGrid.selectAll(".levels")
-              .data(allAxis)
-              .enter()
-              .append("svg:text")
-              .attr("x", function(d, i){return levelFactor*(1-Math.sin(i*angleSlice));})
-              .attr("y", function(d, i){return levelFactor*(1-Math.cos(i*angleSlice));})
-              .attr("class", "legend")
-              .style("font-family", "sans-serif")
-              .style("font-size", "10px")
-              .attr("fill", "#737373")
-              .text(((j+1)/config.levels)*maxValue);
-      } */
-
       // Draw the axes
       var axis = axisGrid.selectAll(".axis")
         .data(allAxis)
@@ -669,22 +653,6 @@ function drawSpiderChart(id, data, data2, config, maxval=1, name1='', name2='') 
         .style("fill", "#CDCDCD")
         .style("stroke", "#CDCDCD")
         .style("fill-opacity", 0.1);
-
-      // Add the values on the axis
-      /* for(var j=0; j<config.levels; j++){
-          var levelFactor = radius2*((j+1)/config.levels);
-          axisGrid.selectAll(".levels")
-              .data(allAxis2)
-              .enter()
-              .append("svg:text")
-              .attr("x", function(d, i){return levelFactor*(1-Math.sin(i*angleSlice2));})
-              .attr("y", function(d, i){return levelFactor*(1-Math.cos(i*angleSlice2));})
-              .attr("class", "legend")
-              .style("font-family", "sans-serif")
-              .style("font-size", "10px")
-              .attr("fill", "#737373")
-              .text(((j+1)/config.levels)*maxValue2);
-      } */
 
       // Draw the axes
       var axis = axisGrid.selectAll(".axis")
@@ -812,123 +780,80 @@ function drawSpiderChart(id, data, data2, config, maxval=1, name1='', name2='') 
       .style("opacity", 0);
 
   } 
-  
-  /*
-  // Get the select element and the table body
-  var select = document.getElementById('feature-select');
-  var tableBody = document.getElementById('feature-table').getElementsByTagName('tbody')[0];
-
-  // Function to update the table and the dropdown options
-  function updateTableAndOptions() {
-    // Clear the table
-    while (tableBody.firstChild) {
-        tableBody.removeChild(tableBody.firstChild);
-    }
-
-    // Populate the table with the current features
-    data.forEach(function(d) {
-        var row = tableBody.insertRow();
-        var cell = row.insertCell();
-        cell.textContent = d.axis;
-        cell = row.insertCell();
-        var button = document.createElement('button');
-        button.textContent = 'x';
-        button.addEventListener('click', function() {
-            // Remove the feature from the data
-            data = data.filter(function(e) {
-                return e.axis !== d.axis;
-            });
-            // Remove the feature from the data
-            data2 = data2.filter(function(e) {
-                return e.axis !== d.axis;
-            });
-
-            // Update the chart, the table, and the dropdown options
-            drawSpiderChart("#chart", data, data2, config);
-            updateTableAndOptions();
-        });
-        cell.appendChild(button);
-    });
-
-    // Update the dropdown options
-    var options = select.options;
-    for (var i = 0; i < options.length; i++) {
-        var option = options[i];
-        if (data.some(function(d) { return d.axis === option.value; })) {
-            option.style.display = 'none';
-        } else {
-            option.style.display = 'block';
-        }
-    }
-  }
-
-  // Redraw the chart whenever the selected option changes
-  select.addEventListener('change', function() {
-    // Get the selected feature
-    var feature = select.value;
-
-    // Add the feature to the data
-    data.push({
-        axis: feature,
-        value: filteredData.map(function(row) {return parseFloat(row[feature]);})
-    });
-
-    // Add the feature to the data
-    data2.push({
-      axis: feature,
-      value: filteredData2.map(function(row) {return parseFloat(row[feature]);})
-  });
-
-    // Create a new div with the feature name
-    var featureDiv = document.createElement('div');
-    featureDiv.textContent = feature;
-
-    // Add a click event listener to the feature div
-    featureDiv.addEventListener('click', function() {
-        // Remove the feature from the data
-        data = data.filter(function(d) {
-            return d.axis !== feature;
-        });
-        // Remove the feature from the data
-        data2 = data2.filter(function(d) {
-          return d.axis !== feature;
-      });
-
-        // Remove the feature div
-        featureDiv.remove();
-
-        // Update the chart and the dropdown options
-        drawSpiderChart("#chart", data, data2, config);
-        updateTableAndOptions();
-    });
-
-    // Append the div to the features container
-    document.getElementById('features-container').appendChild(featureDiv);
-
-    // Update the chart, the table, and the dropdown options
-    drawSpiderChart("#chart", data, data2, config);
-    updateTableAndOptions();
-  });
-  */
 
   // Get the select element and the features list
-var select = document.getElementById('feature-select');
-var featuresList = document.getElementById('features-list');
+// var select = document.getElementById('spider-featureDropdown');
+// var featuresList = document.getElementById('spider-selectedFeatures');
+// Add event listener to the feature dropdown for feature selection
+// Features to plot on the timeline
+let spider_selected_features = ['goals_scored', 'assists', 'expected_goals', 'expected_assists', 'bonus'];
+
+const select = document.getElementById('spider-featureDropdown');
+const featuresList = document.getElementById('spider-selectedFeatures');
+const maxFeaturesMessage = document.getElementById('maxFeaturesMessage');
+
+
+// Function to display selected features as buttons
+const spiderdisplaySelectedFeatures = () => {
+  featuresList.innerHTML = ''; // Clear previous content
+
+  spider_selected_features.forEach((feature) => {
+      const featureButton = document.createElement('button');
+      featureButton.textContent = feature + ' ❌'; // Show feature name and cross mark
+      featureButton.classList.add('selectedFeature');
+
+      featureButton.addEventListener('click', () => {
+          spider_selected_features = spider_selected_features.filter((item) => item !== feature);
+          spiderdisplaySelectedFeatures(); // Call this function after removing the feature
+
+          // Populate the list with the current features
+          data.forEach(function() {
+                // Remove the feature from the data
+                data = data.filter(function(e) {
+                    return e.axis !== feature;
+                });
+                // Remove the feature from the data
+                data2 = data2.filter(function(e) {
+                    return e.axis !== feature;
+                });
+
+                // Update the chart, the list, and the dropdown options
+                drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
+                //updateListAndOptions();
+            });
+            // listItem.appendChild(button);
+            //featuresList.appendChild(listItem);
+        });
+
+          //updateFeatures(spider_selected_features);
+          //updateListAndOptions();
+
+      featuresList.appendChild(featureButton);
+  });
+
+  // Apply CSS to handle button layout
+  featuresList.style.display = 'flex';
+  featuresList.style.flexWrap = 'wrap';
+  featuresList.style.gap = '5px'; // Adjust the gap between buttons as needed
+};
+
+
+spiderdisplaySelectedFeatures();
 
 // Function to update the list and the dropdown options
 function updateListAndOptions() {
   // Clear the list
-  while (featuresList.firstChild) {
-      featuresList.removeChild(featuresList.firstChild);
-  }
+  featuresList.innerHTML = ''; // Clear previous content
+  // while (featuresList.firstChild) {
+  //    featuresList.removeChild(featuresList.firstChild);
+  //}
 
   // Populate the list with the current features
   data.forEach(function(d) {
-      var listItem = document.createElement('li');
-      listItem.textContent = d.axis;
-      var button = document.createElement('button');
-      button.textContent = 'x';
-      button.addEventListener('click', function() {
+      const listItem = document.createElement('button');
+      listItem.textContent = feature + ' ❌'; // Show feature name and cross mark
+      listItem.classList.add('selectedFeature');
+      listItem.addEventListener('click', function() {
           // Remove the feature from the data
           data = data.filter(function(e) {
               return e.axis !== d.axis;
@@ -942,7 +867,7 @@ function updateListAndOptions() {
           drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
           updateListAndOptions();
       });
-      listItem.appendChild(button);
+      // listItem.appendChild(button);
       featuresList.appendChild(listItem);
   });
 
@@ -961,7 +886,23 @@ function updateListAndOptions() {
 // Redraw the chart whenever the selected option changes
 select.addEventListener('change', function() {
   // Get the selected feature
-  var feature = select.value;
+  const feature = select.value;
+
+  if (spider_selected_features.length >= 7) {
+    maxFeaturesMessage.style.display = 'block';
+    maxFeaturesMessage.style.fontSize = '12px';
+    maxFeaturesMessage.style.margin = '5px';
+    return;
+  }
+
+  if (!spider_selected_features.includes(feature)) {
+    spider_selected_features.push(feature);
+    maxFeaturesMessage.style.display = 'none';
+    spiderdisplaySelectedFeatures();
+
+    // Call update_timeline_Plot whenever selected features change
+    // update_timeline_Plot(selected_features);
+  }
 
   // Add the feature to the data
   data.push({
@@ -973,10 +914,10 @@ select.addEventListener('change', function() {
   data2.push({
     axis: feature,
     value: filteredData2.map(function(row) {return parseFloat(row[feature]);})
-});
+  });
 
   // Create a new div with the feature name
-  var featureDiv = document.createElement('div');
+  /* var featureDiv = document.createElement('div');
   featureDiv.textContent = feature;
 
   // Add a click event listener to the feature div
@@ -996,14 +937,14 @@ select.addEventListener('change', function() {
       // Update the chart and the dropdown options
       drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
       updateListAndOptions();
-  });
+  }); */
 
   // Append the div to the features container
-  document.getElementById('features-container').appendChild(featureDiv);
+  // document.getElementById('spider-feature-container').appendChild(featureDiv);
 
   // Update the chart, the list, and the dropdown options
   drawSpiderChart("#chart", data, data2, config, player1, player2);
-  updateListAndOptions();
+  // updateListAndOptions();
 });
 
   // Get the player boxes
@@ -1118,29 +1059,10 @@ select.addEventListener('change', function() {
     // Update the chart with the aggregated data
     drawSpiderChart("#chart", aggregatedData, aggregatedData2, config, finalMaxValue, player1, player2);
 
-    // Get the data display div
-  /* var dataDisplay = document.getElementById('data-display');
-
-  if (data.length > 0) {
-    // Convert the data to a string
-    var dataString = JSON.stringify(data, null, 2);
-
-    // Set the innerHTML of the data display div
-    // dataDisplay.innerHTML = '<pre>' + dataString + '</pre>';
-  }
-
-  if (data2.length > 0) {
-    // Convert the data to a string
-    var dataString2 = JSON.stringify(data2, null, 2);
-
-    // Set the innerHTML of the data display div
-    // dataDisplay.innerHTML = '<pre>' + dataString2 + '</pre>';
-  } */
-
   }
 
   // Draw the chart initially with all players
   window.onload = function() {
     updateChart();
-    updateListAndOptions();
+    //updateListAndOptions();
   }

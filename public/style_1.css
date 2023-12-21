@@ -171,8 +171,8 @@ body .tooltip{
 
 #player-grid {
     position: absolute;
-    top: 250px;
-    left: 50px;
+    top: 300px;
+    left: 100px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     padding: 10px;
@@ -180,8 +180,8 @@ body .tooltip{
 
 #player-grid2 {
     position: absolute;
-    top: 250px;
-    left: 1190px;
+    top: 300px;
+    left: 1140px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     padding: 10px;
@@ -189,7 +189,7 @@ body .tooltip{
 
 #chart {
     position: absolute;
-    top: 53%;
+    top: 58%;
     left: 53%;
     transform: translate(-50%, -50%);
     padding: 20px;
@@ -244,7 +244,7 @@ body .tooltip{
     gap: 10px;
     position: absolute;
     top: 70px;
-    left: 10px;
+    left: 60px;
 }
 
 #player-list-container {
@@ -270,7 +270,7 @@ body .tooltip{
     gap: 10px;
     position: absolute;
     top: 70px;
-    left: 1100px;
+    left: 1050px;
 }
 
 #player-list-container2 {
@@ -292,26 +292,26 @@ body .tooltip{
 
 #select-all-button-1 {
     position: absolute;
-    top: 500px;
-    left: 70px;
+    top: 550px;
+    left: 120px;
 }
 
 #unselect-all-button-1 {
     position: absolute;
-    top: 500px;
-    left: 230px;
+    top: 550px;
+    left: 280px;
 }
 
 #select-all-button-2 {
     position: absolute;
-    top: 500px;
-    left: 1215px;
+    top: 550px;
+    left: 1165px;
 }
 
 #unselect-all-button-2 {
     position: absolute;
-    top: 500px;
-    left: 1375px;
+    top: 550px;
+    left: 1325px;
 }
 
 .tooltip {
@@ -323,4 +323,33 @@ body .tooltip{
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
+  }
+
+  .spider-feature-container {
+    position: absolute;
+    top: 70px;
+    left: 520px;
+    display: inline-block;
+    height: 200px; /* Set a fixed height for the feature container */
+    overflow-y: auto;
+    vertical-align: top;
+    width: 30%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* Include padding and border in the width */
+    float: left; /* Float the container to the left */
+  }
+
+  .spider-selectedFeature {
+    display: block;
+    margin-bottom: 5px; /* Adjust spacing between buttons */
+    max-width: 90%; /* Limit the maximum width of buttons */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis for text overflow */
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+
+  #spider-featureDropdown {
+    width: 100%; /* Set the width to fill the container */
+    box-sizing: border-box; /* Include padding and border in the width */
   }

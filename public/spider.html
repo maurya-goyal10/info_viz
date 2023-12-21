@@ -71,18 +71,35 @@
         </div>
     </div>
     <div id="chart"></div>
-    <select id="feature-select">
+    <!-- <select id="feature-select">
         <option value="assists">Assists</option>
         <option value="goals_scored">Goals Scored</option>
         <option value="expected_assists">Expected Assists</option>
         <option value="expected_goals">Expected Goals</option>
         <option value="bonus">Bonus</option>
-    </select>
-    <div id="features-container">
+    </select> -->
+    <div class="spider-feature-container">
+        <section>
+            <div id="spider-selectedFeatures">
+                <!-- Selected features will be displayed here as buttons -->
+            </div>
+            <p>Feature selection:</p>
+            <select id="spider-featureDropdown">
+                <!-- Dropdown options will be populated dynamically -->
+                <option value="assists">Assists</option>
+                <option value="goals_scored">Goals Scored</option>
+                <option value="expected_assists">Expected Assists</option>
+                <option value="expected_goals">Expected Goals</option>
+                <option value="bonus">Bonus</option>
+            </select>
+            <p id="maxFeaturesMessage" style="color: red; display: none;">Maximum of 3 features allowed!</p>
+        </section>
+    </div>
+    <!-- <div id="features-container">
 
         <div id="features-list"></div>
         
-    </div>
+    </div> -->
     <link rel="stylesheet" href="style_1.css">
     <script src="js/spider.js"></script>
 </body>
