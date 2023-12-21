@@ -330,7 +330,7 @@ body .tooltip{
     top: 70px;
     left: 520px;
     display: inline-block;
-    height: 200px; /* Set a fixed height for the feature container */
+    height: 250px; /* Set a fixed height for the feature container */
     overflow-y: auto;
     vertical-align: top;
     width: 30%;

@@ -308,13 +308,22 @@ d3.csv("../data/individual_gw.csv").then(function(csvData) {
               });
 
               // Map the filtered data to the format expected by the drawSpiderChart function
-              data = [
+              /* data = [
                   {axis: 'assists', value: filteredData.map(function(row) {return parseInt(row['assists']);})},
                   {axis: 'goals_scored', value: filteredData.map(function(row) {return parseInt(row['goals_scored']);})},
                   {axis: 'expected_assists', value: filteredData.map(function(row) {return parseFloat(row['expected_assists']);})},
                   {axis: 'expected_goals', value: filteredData.map(function(row) {return parseFloat(row['expected_goals']);})},
                   {axis: 'bonus', value: filteredData.map(function(row) {return parseInt(row['bonus']);})}
-              ];
+              ]; */
+
+              // Add the feature to the data
+              data = [];
+              for (var i = 0; i < spider_selected_features.length; i++) {
+                var hit_feature = spider_selected_features[i];
+                data.push({
+                    axis: hit_feature,
+                    value: filteredData.map(function(row) {return parseFloat(row[hit_feature]);})
+                });}
 
               gw1 = [
                   {axis: 'opponent', value: filteredData.map(function(row) {return parseInt(row['opponent_team']);})},
@@ -414,7 +423,9 @@ d3.csv("../data/individual_gw.csv").then(function(csvData) {
             redirect_to_trend.href = 'timeline.html?' + queryString;
 
               // Call the drawSpiderChart function with the mapped data
-              drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
+              //drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
+              updateChart();
+              
               // Add this inside the selectButton click event listener, after the drawSpiderChart function call
               // var selectedPlayer = document.getElementById('selected-player');
               selectedPlayer.textContent = 'Selected player: ' + playerName;
@@ -461,13 +472,22 @@ d3.csv("../data/individual_gw.csv").then(function(csvData) {
               });
 
               // Map the filtered data to the format expected by the drawSpiderChart function
-              data2 = [
+              /* data2 = [
                   {axis: 'assists', value: filteredData2.map(function(row) {return parseInt(row['assists']);})},
                   {axis: 'goals_scored', value: filteredData2.map(function(row) {return parseInt(row['goals_scored']);})},
                   {axis: 'expected_assists', value: filteredData2.map(function(row) {return parseFloat(row['expected_assists']);})},
                   {axis: 'expected_goals', value: filteredData2.map(function(row) {return parseFloat(row['expected_goals']);})},
                   {axis: 'bonus', value: filteredData2.map(function(row) {return parseInt(row['bonus']);})}
-              ];
+              ]; */
+
+              // Add the feature to the data
+              data2 = [];
+              for (var i = 0; i < spider_selected_features.length; i++) {
+                var hit_feature = spider_selected_features[i];
+                data2.push({
+                    axis: hit_feature,
+                    value: filteredData2.map(function(row) {return parseFloat(row[hit_feature]);})
+                });}
 
               gw2 = [
                   {axis: 'opponent', value: filteredData2.map(function(row) {return parseInt(row['opponent_team']);})},
@@ -567,7 +587,8 @@ d3.csv("../data/individual_gw.csv").then(function(csvData) {
             redirect_to_trend.href = 'timeline.html?' + queryString;
 
               // Call the drawSpiderChart function with the mapped data
-              drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
+              //drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
+              updateChart();
 
               selectedPlayer2.textContent = 'Selected player: ' + playerName;
 
@@ -823,6 +844,8 @@ const featuresList = document.getElementById('spider-selectedFeatures');
 const maxFeaturesMessage = document.getElementById('maxFeaturesMessage');
 const minFeaturesMessage = document.getElementById('minFeaturesMessage');
 
+// Reset the selected option to the blank option
+select.value = '';
 
 // Function to display selected features as buttons
 const spiderdisplaySelectedFeatures = () => {
