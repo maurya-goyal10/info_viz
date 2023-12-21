@@ -170,7 +170,7 @@ d3.csv("../data/individual_gw.csv").then(function(csvData) {
     playerName = player2;
 
     // Filter the data to only include the rows for the selected player
-    var filteredData2 = csvData.filter(function(row) {
+    filteredData2 = csvData.filter(function(row) {
         return row['name'] === playerName;
     });
 
@@ -456,7 +456,7 @@ d3.csv("../data/individual_gw.csv").then(function(csvData) {
               player2 = playerName;
 
               // Filter the data to only include the rows for the selected player
-              var filteredData2 = csvData.filter(function(row) {
+              filteredData2 = csvData.filter(function(row) {
                   return row['name'] === playerName;
               });
 
@@ -592,7 +592,6 @@ function drawSpiderChart(id, data, data2, config, maxval=1, name1='', name2='') 
     // Print data and data2 to the console
     console.log('data:', data);
     console.log('data2:', data2);
-
 
     d3.select(id).select("svg").remove();
 
@@ -822,6 +821,7 @@ let spider_selected_features = ['goals_scored', 'assists', 'expected_goals', 'ex
 const select = document.getElementById('spider-featureDropdown');
 const featuresList = document.getElementById('spider-selectedFeatures');
 const maxFeaturesMessage = document.getElementById('maxFeaturesMessage');
+const minFeaturesMessage = document.getElementById('minFeaturesMessage');
 
 
 // Function to display selected features as buttons
@@ -834,26 +834,63 @@ const spiderdisplaySelectedFeatures = () => {
       featureButton.classList.add('selectedFeature');
 
       featureButton.addEventListener('click', () => {
-          spider_selected_features = spider_selected_features.filter((item) => item !== feature);
-          spiderdisplaySelectedFeatures(); // Call this function after removing the feature
+          maxFeaturesMessage.style.display = 'none';
+          
+          if (spider_selected_features.length <= 3) {
+            minFeaturesMessage.style.display = 'block';
+            minFeaturesMessage.style.fontSize = '12px';
+            minFeaturesMessage.style.margin = '5px';
+            return;
+          }
+          else {
+            minFeaturesMessage.style.display = 'none';
+            spider_selected_features = spider_selected_features.filter((item) => item !== feature);
+            spiderdisplaySelectedFeatures(); // Call this function after removing the feature
 
-          // Populate the list with the current features
-          data.forEach(function() {
+            // Populate the list with the current features
+            data.forEach(function() {
+
                 // Remove the feature from the data
                 data = data.filter(function(e) {
                     return e.axis !== feature;
                 });
-                // Remove the feature from the data
-                data2 = data2.filter(function(e) {
-                    return e.axis !== feature;
-                });
-
-                // Update the chart, the list, and the dropdown options
-                drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
-                //updateListAndOptions();
+                
             });
+
+            // Populate the list with the current features
+            data2.forEach(function() {
+
+              // Remove the feature from the data
+              data2 = data2.filter(function(e) {
+                return e.axis !== feature;
+              });
+            
+            });
+
+            // Update the dropdown options
+            var options = select.options;
+            for (var i = 0; i < options.length; i++) {
+              var option = options[i];
+              if (data.some(function(d) { return d.axis === option.value; })) {
+                option.style.display = 'none';
+              } else {
+                option.style.display = 'block';
+              }
+            }
+
+            // Add the feature to the dropdown
+            var newOption = document.createElement('option');
+            newOption.value = feature;
+            newOption.text = feature;
+            select.appendChild(newOption);
+
             // listItem.appendChild(button);
             //featuresList.appendChild(listItem);
+            // Reset the selected option to the blank option
+            select.value = '';
+          
+            updateChart();
+            }
         });
 
           //updateFeatures(spider_selected_features);
@@ -895,8 +932,9 @@ function updateListAndOptions() {
           });
 
           // Update the chart, the list, and the dropdown options
-          drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
+          //drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
           updateListAndOptions();
+          updateChart();
       });
       // listItem.appendChild(button);
       featuresList.appendChild(listItem);
@@ -917,7 +955,8 @@ function updateListAndOptions() {
 // Redraw the chart whenever the selected option changes
 select.addEventListener('change', function() {
   // Get the selected feature
-  const feature = select.value;
+  var hit_feature = select.value;
+  minFeaturesMessage.style.display = 'none';
 
   if (spider_selected_features.length >= 7) {
     maxFeaturesMessage.style.display = 'block';
@@ -926,56 +965,40 @@ select.addEventListener('change', function() {
     return;
   }
 
-  if (!spider_selected_features.includes(feature)) {
-    spider_selected_features.push(feature);
+  if (!spider_selected_features.includes(hit_feature)) {
+    spider_selected_features.push(hit_feature);
     maxFeaturesMessage.style.display = 'none';
+    // Remove the feature from the dropdown
+    for (var i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === hit_feature) {
+            select.remove(i);
+            break;
+        }
+    }
     spiderdisplaySelectedFeatures();
 
     // Call update_timeline_Plot whenever selected features change
     // update_timeline_Plot(selected_features);
-  }
+
+  console.log('selected features:', spider_selected_features);
 
   // Add the feature to the data
   data.push({
-      axis: feature,
-      value: filteredData.map(function(row) {return parseFloat(row[feature]);})
+      axis: hit_feature,
+      value: filteredData.map(function(row) {return parseFloat(row[hit_feature]);})
   });
 
   // Add the feature to the data
   data2.push({
-    axis: feature,
-    value: filteredData2.map(function(row) {return parseFloat(row[feature]);})
+    axis: hit_feature,
+    value: filteredData2.map(function(row) {return parseFloat(row[hit_feature]);})
   });
 
-  // Create a new div with the feature name
-  /* var featureDiv = document.createElement('div');
-  featureDiv.textContent = feature;
+  }
+  // Reset the selected option to the blank option
+  select.value = '';
 
-  // Add a click event listener to the feature div
-  featureDiv.addEventListener('click', function() {
-      // Remove the feature from the data
-      data = data.filter(function(d) {
-          return d.axis !== feature;
-      });
-      // Remove the feature from the data
-      data2 = data2.filter(function(d) {
-        return d.axis !== feature;
-    });
-
-      // Remove the feature div
-      featureDiv.remove();
-
-      // Update the chart and the dropdown options
-      drawSpiderChart("#chart", data, data2, config, 1, player1, player2);
-      updateListAndOptions();
-  }); */
-
-  // Append the div to the features container
-  // document.getElementById('spider-feature-container').appendChild(featureDiv);
-
-  // Update the chart, the list, and the dropdown options
-  drawSpiderChart("#chart", data, data2, config, player1, player2);
-  // updateListAndOptions();
+  updateChart();
 });
 
   // Get the player boxes
@@ -1039,6 +1062,11 @@ select.addEventListener('change', function() {
 
   // Function to update the chart based on the selected players
   function updateChart() {
+
+    // Print data and data2 to the console
+  console.log('filall_data:', filteredData);
+  console.log('filall_data2:', filteredData2);
+
     // Get the selected players
     var selectedPlayers = [];
     console.log('boxes:', playerBoxes);
@@ -1047,7 +1075,7 @@ select.addEventListener('change', function() {
             selectedPlayers.push(i);
         }
     }
-
+    
     // Calculate the aggregated data for the selected players
     var aggregatedData = data.map(function(d) {
         var value = selectedPlayers.reduce(function(sum, i) {
@@ -1071,6 +1099,7 @@ select.addEventListener('change', function() {
       }, 0);
       return {axis: d.axis, value: value};
   });
+
 
     // Find the maximum value across all features
     var maxValue = Math.max(...aggregatedData.map(function(d) { return d.value; }));

@@ -171,7 +171,7 @@ body .tooltip{
 
 #player-grid {
     position: absolute;
-    top: 300px;
+    top: 400px;
     left: 100px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -180,7 +180,7 @@ body .tooltip{
 
 #player-grid2 {
     position: absolute;
-    top: 300px;
+    top: 400px;
     left: 1140px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -189,7 +189,7 @@ body .tooltip{
 
 #chart {
     position: absolute;
-    top: 58%;
+    top: 70%;
     left: 53%;
     transform: translate(-50%, -50%);
     padding: 20px;
@@ -292,25 +292,25 @@ body .tooltip{
 
 #select-all-button-1 {
     position: absolute;
-    top: 550px;
+    top: 650px;
     left: 120px;
 }
 
 #unselect-all-button-1 {
     position: absolute;
-    top: 550px;
+    top: 650px;
     left: 280px;
 }
 
 #select-all-button-2 {
     position: absolute;
-    top: 550px;
+    top: 650px;
     left: 1165px;
 }
 
 #unselect-all-button-2 {
     position: absolute;
-    top: 550px;
+    top: 650px;
     left: 1325px;
 }
 
@@ -353,3 +353,27 @@ body .tooltip{
     width: 100%; /* Set the width to fill the container */
     box-sizing: border-box; /* Include padding and border in the width */
   }
+
+  /* Custom Legend Container */
+  #spider-legend-container {
+    position: absolute;
+    top: 360px; /* Adjust as needed */
+    left: 500px; /* Adjust as needed */
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff;
+  }
+
+  /* Legend Lines */
+  .spider-legend-line {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+
+  /* Legend Text */
+  .spider-legend-text {
+    vertical-align: top;
+  }
+  

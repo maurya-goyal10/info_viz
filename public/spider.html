@@ -85,14 +85,15 @@
             </div>
             <p>Feature selection:</p>
             <select id="spider-featureDropdown">
-                <!-- Dropdown options will be populated dynamically -->
+                <!-- Dropdown options will be populated dynamically 
                 <option value="assists">Assists</option>
                 <option value="goals_scored">Goals Scored</option>
                 <option value="expected_assists">Expected Assists</option>
                 <option value="expected_goals">Expected Goals</option>
-                <option value="bonus">Bonus</option>
+                <option value="bonus">Bonus</option> -->
             </select>
-            <p id="maxFeaturesMessage" style="color: red; display: none;">Maximum of 3 features allowed!</p>
+            <p id="minFeaturesMessage" style="color: red; display: none;">At least 3 features are required!</p>
+            <p id="maxFeaturesMessage" style="color: red; display: none;">No more than 7 features are allowed!</p>
         </section>
     </div>
     <!-- <div id="features-container">
@@ -100,6 +101,11 @@
         <div id="features-list"></div>
         
     </div> -->
+    <!-- Custom Legend Container -->
+    <div id="spider-legend-container">
+        <p><span class="spider-legend-line" style="background-color: blue;"></span> <span class="spider-legend-text">Player 1</span></p>
+        <p><span class="spider-legend-line" style="background-color: red;"></span> <span class="spider-legend-text">Player 2</span></p>
+    </div>
     <link rel="stylesheet" href="style_1.css">
     <script src="js/spider.js"></script>
 </body>
