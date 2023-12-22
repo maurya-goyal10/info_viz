@@ -24,7 +24,7 @@ const timeline_inner_width = timeline_svg_width - timeline_margin.left - timelin
 const timeline_inner_height = timeline_svg_height - timeline_margin.top - timeline_margin.bottom;
 
 // Features to plot on the timeline
-let selected_features = ['xP', 'creativity'];
+let selected_features = ['xP', 'total_points'];
 // Player names for whom the timeline plot is done
 const player1 = p1?p1:'Erling Haaland';
 const player2 = p2?p2:'Mohamed Salah';
